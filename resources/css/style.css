@@ -1,0 +1,488 @@
+/* ============================================
+   E-BookStore — Main Stylesheet
+   Dark Luxury Editorial Theme
+   ============================================ */
+
+:root {
+  --gold: #c8a96e;
+  --gold-dark: #a07840;
+  --dark: #0f0e0b;
+  --dark-2: #1a1915;
+  --dark-3: #252420;
+  --text: #e8e0d0;
+  --muted: #a09880;
+  --border: rgba(255,255,255,0.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body { -webkit-font-smoothing: antialiased; }
+
+/* ---- GRAIN TEXTURE ---- */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* ---- NAVBAR ---- */
+.nav-bar {
+  background: rgba(15, 14, 11, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.nav-bar.scrolled {
+  background: rgba(15, 14, 11, 0.95);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+.logo-icon {
+  background: linear-gradient(135deg, rgba(200,169,110,0.2), rgba(160,120,64,0.1));
+  border: 1px solid rgba(200,169,110,0.3);
+}
+
+.nav-icon-btn {
+  background: rgba(255,255,255,0.04);
+  transition: all 0.2s ease;
+}
+.nav-icon-btn:hover { background: rgba(255,255,255,0.08); }
+
+.user-dropdown {
+  background: #1a1915;
+  border: 1px solid var(--border);
+}
+
+.role-badge {
+  background: rgba(200,169,110,0.15);
+  color: var(--gold);
+  border: 1px solid rgba(200,169,110,0.25);
+}
+
+/* ---- HERO ---- */
+.hero-section {
+  background: var(--dark);
+}
+
+.hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(200,169,110,0.06) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,169,110,0.04) 0%, transparent 60%);
+}
+
+/* ---- BOOK CARDS (HERO FLOAT) ---- */
+.books-float { position: relative; height: 480px; }
+
+.book-card-hero {
+  position: absolute;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  transition: transform 0.4s ease;
+}
+
+.book-card-hero:hover { transform: translateY(-8px) rotate(-1deg); }
+
+.book-1 { width: 180px; height: 250px; top: 20px; left: 20px; transform: rotate(-5deg); }
+.book-2 { width: 160px; height: 220px; top: 0px; left: 180px; transform: rotate(3deg); }
+.book-3 { width: 170px; height: 240px; top: 180px; left: 60px; transform: rotate(2deg); }
+.book-4 { width: 155px; height: 210px; top: 160px; left: 220px; transform: rotate(-3deg); }
+
+.book-cover { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; position: relative; }
+
+.book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: rgba(0,0,0,0.3); }
+
+.book-title-hero { font-size: 13px; font-weight: 700; color: white; line-height: 1.2; margin-bottom: 4px; }
+.book-author-hero { font-size: 10px; color: rgba(255,255,255,0.7); }
+
+/* ---- BUTTONS ---- */
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #0a0800;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  display: inline-block;
+  text-align: center;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #d4b87e, var(--gold));
+  box-shadow: 0 8px 30px rgba(200,169,110,0.35);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: all 0.25s ease;
+  display: inline-block;
+  text-align: center;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+/* ---- CATEGORY CARD ---- */
+.category-card {
+  transition: all 0.3s ease;
+}
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+/* ---- BOOK ITEMS ---- */
+.book-item { transition: transform 0.25s ease; }
+.book-item:hover { transform: translateY(-4px); }
+
+.book-cover-wrapper {
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.book-item:hover .book-cover-wrapper {
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+/* ---- CTA SECTION ---- */
+.cta-bg {
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(200,169,110,0.08) 0%, transparent 70%);
+}
+
+/* ---- FOOTER ---- */
+.footer-section {
+  background: #0a0908;
+}
+
+/* ---- SEARCH OVERLAY ---- */
+.search-form {
+  background: rgba(26, 25, 21, 0.95);
+  border: 1px solid rgba(200,169,110,0.3);
+  backdrop-filter: blur(20px);
+}
+
+.search-input {
+  color: var(--text);
+}
+
+.search-input::placeholder {
+  color: var(--muted);
+}
+
+/* ---- AUTH PAGES ---- */
+.auth-left-bg {
+  background: linear-gradient(135deg, #0a0908 0%, #1a1610 50%, #0f0d0a 100%);
+}
+
+.auth-left-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 30% 40%, rgba(200,169,110,0.1) 0%, transparent 60%);
+}
+
+.auth-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+/* ---- ROLE SELECTOR ---- */
+.role-selector {
+  background: rgba(255,255,255,0.04);
+}
+
+.role-btn {
+  color: var(--muted);
+  background: transparent;
+}
+
+.role-btn.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #0a0800;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(200,169,110,0.3);
+}
+
+.role-desc-box {
+  background: rgba(200,169,110,0.05);
+  border: 1px solid rgba(200,169,110,0.15);
+}
+
+.demo-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.25s ease;
+}
+.demo-card:hover {
+  background: rgba(200,169,110,0.06);
+  border-color: rgba(200,169,110,0.2);
+}
+
+.demo-card-sm {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.demo-card-sm:hover {
+  border-color: rgba(200,169,110,0.3);
+}
+
+/* ---- FORM INPUTS ---- */
+.form-input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+.form-input:focus {
+  border-color: rgba(200,169,110,0.5);
+  background: rgba(200,169,110,0.05);
+  box-shadow: 0 0 0 3px rgba(200,169,110,0.08);
+}
+.form-input::placeholder { color: var(--muted); }
+.form-input option { background: #1a1915; }
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* ---- ALERTS ---- */
+.error-alert {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+.success-alert {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+}
+
+/* ---- CATALOG SIDEBAR ---- */
+.sidebar-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+.filter-link {
+  color: var(--muted);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.filter-link:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.filter-link.active {
+  background: rgba(200,169,110,0.1);
+  color: var(--gold);
+  border: 1px solid rgba(200,169,110,0.2);
+}
+
+/* ---- BOOK DETAIL ---- */
+.book-cover-xl {
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+}
+
+.book-spine-xl {
+  background: rgba(0,0,0,0.35);
+  border-radius: 3px 0 0 3px;
+}
+
+.category-tag {
+  background: rgba(200,169,110,0.1);
+  color: var(--gold);
+  border: 1px solid rgba(200,169,110,0.2);
+}
+
+.detail-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+.price-tag { color: var(--gold); }
+
+.seller-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+/* ---- CART ---- */
+.cart-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+.cart-item:hover { border-color: rgba(200,169,110,0.2); }
+
+.cart-summary {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+/* ---- DASHBOARDS ---- */
+.stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+.stat-card:hover {
+  border-color: rgba(200,169,110,0.2);
+  transform: translateY(-2px);
+}
+
+.dashboard-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+
+.order-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+.order-card:hover { border-color: rgba(200,169,110,0.2); }
+
+.role-pill {
+  display: inline-block;
+}
+.role-pill.role-admin {
+  background: rgba(168,85,247,0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168,85,247,0.25);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+.role-pill.role-seller {
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+  border: 1px solid rgba(16,185,129,0.25);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+.role-pill.role-buyer {
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59,130,246,0.25);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.order-status {
+  display: inline-block;
+}
+.status-completed {
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+  border: 1px solid rgba(16,185,129,0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.status-processing {
+  background: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.quick-action-btn {
+  color: var(--muted);
+  transition: all 0.2s ease;
+  border-radius: 10px;
+}
+.quick-action-btn:hover {
+  background: rgba(200,169,110,0.08);
+  color: var(--text);
+}
+
+/* ---- MODAL ---- */
+.modal-overlay { backdrop-filter: blur(8px); }
+
+.modal-card {
+  background: #1a1915;
+  border: 1px solid rgba(200,169,110,0.2);
+  box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb {
+  background: rgba(200,169,110,0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(200,169,110,0.5); }
+
+/* ---- ANIMATIONS ---- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: rotate(-5deg) translateY(0px); }
+  50% { transform: rotate(-5deg) translateY(-12px); }
+}
+@keyframes float2 {
+  0%, 100% { transform: rotate(3deg) translateY(0px); }
+  50% { transform: rotate(3deg) translateY(-8px); }
+}
+@keyframes float3 {
+  0%, 100% { transform: rotate(2deg) translateY(0px); }
+  50% { transform: rotate(2deg) translateY(-15px); }
+}
+@keyframes float4 {
+  0%, 100% { transform: rotate(-3deg) translateY(0px); }
+  50% { transform: rotate(-3deg) translateY(-10px); }
+}
+
+.book-1 { animation: float 6s ease-in-out infinite; }
+.book-2 { animation: float2 7s ease-in-out infinite 1s; }
+.book-3 { animation: float3 5s ease-in-out infinite 0.5s; }
+.book-4 { animation: float4 8s ease-in-out infinite 1.5s; }
+
+.hero-text > * {
+  animation: fadeInUp 0.7s ease forwards;
+  opacity: 0;
+}
+.hero-text > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-text > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-text > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-text > *:nth-child(4) { animation-delay: 0.4s; }
+.hero-text > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Line clamp utilities */
+.line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+.line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+/* Hover transition on table rows */
+tr { transition: background 0.15s ease; }
+
+/* Mobile responsiveness helpers */
+@media (max-width: 768px) {
+  .books-float { display: none; }
+}
+
+/* Demo fill animation */
+@keyframes demoPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,169,110,0); }
+  50% { box-shadow: 0 0 0 8px rgba(200,169,110,0.15); }
+}
+.demo-fill-anim { animation: demoPulse 0.5s ease; border-radius: 16px; }
+
+/* Cart badge pulse */
+.cart-badge { animation: pulse 2s infinite; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
