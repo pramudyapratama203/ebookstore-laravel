@@ -102,6 +102,12 @@ class BookController extends Controller
         return view('dashboard.buyer.detail', compact('book'));
     }
 
+    public function showSellerBookById($id)
+    {
+        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+
+        return view('dashboard.seller.detailcatalog', compact('book'));
+    }
     public function create()
     {
         $categories = Category::all();
@@ -147,5 +153,49 @@ class BookController extends Controller
         ]);
 
         return redirect()->route('seller.catalog')->with('success', 'Buku berhasil ditambahkan!');
+    }
+
+    public function editCategory($id)
+    {
+        // Cari data buku berdasarkan ID untuk mengambil data kategori saat ini
+        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+        
+        return view('books.updatebook', compact('book'));
+    }
+
+    public function updateCategory(Request $request, $id)
+    {
+        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'author'      => 'required|string|max:255',
+            'category'    => 'required|string|max:50',
+            'publisher'   => 'nullable|string|max:255',
+            'year'        => 'required|integer|min:1000|max:2100',
+            'language'    => 'required|string',
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'cover_color' => 'required|string',
+            'pages' => 'required|integer|min:1',
+        ]);
+
+        // Update seluruh data buku secara massal
+        $book->update($request->all());
+
+        return redirect()->route('seller.catalog')->with('success', 'Informasi buku berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        // 1. Cari data buku milik seller yang bersangkutan agar aman dari seller lain
+        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+
+        // 2. Hapus data buku dari database
+        $book->delete();
+
+        // 3. Alihkan kembali ke halaman katalog dengan pesan sukses
+        return redirect()->route('seller.catalog')->with('success', 'Buku berhasil dihapus dari katalog Anda!');
     }
 }

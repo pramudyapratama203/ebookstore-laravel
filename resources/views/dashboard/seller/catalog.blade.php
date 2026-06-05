@@ -117,9 +117,22 @@
                             <td class="py-4 px-6 font-semibold text-gray-900">Rp {{ number_format($book->price, 0, ',', '.') }}</td>
                             <td class="py-4 px-6 text-right">
                                 <div class="flex items-center justify-end gap-1 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                    <button type="button" class="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-[#5f3822]" title="View Details"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
-                                    <button type="button" class="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-[#5f3822]" title="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                                    <button type="button" class="p-2 hover:bg-red-50 rounded-xl text-gray-400 hover:text-red-600" title="Delete"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                                        <a href="{{ route('seller.catalog.detail', $book->id) }}" title="Lihat Detail Buku">
+                                            <button type="button" class="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-[#5f3822]">
+                                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                            </button>
+                                        </a>
+                                        <a href="{{ route('seller.category.edit', $book->id) }}" title="Edit Kategori">
+                                            <button type="button" class="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-[#5f3822]">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                        </a>                                   
+                                        <button type="button" 
+                                            class="p-2 hover:bg-red-50 rounded-xl text-gray-400 hover:text-red-600 transition-colors" 
+                                            title="Delete Buku"
+                                            onclick="openDeleteModal('{{ $book->id }}', '{{ $book->title }}')">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
                                 </div>
                             </td>
                         </tr>
@@ -152,5 +165,56 @@
         </div>
 
     </div>
+
+    <div id="deleteBookModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-gray-100 transform scale-95 transition-transform duration-300 relative">
+            
+            <!-- Icon Peringatan Merah -->
+            <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <span class="material-symbols-outlined text-2xl">delete_forever</span>
+            </div>
+
+            <h3 class="font-['Literata'] text-lg font-bold text-gray-900 mb-2">Hapus Buku Ini?</h3>
+            <p class="text-xs text-gray-500 font-['Source_Serif_4'] italic leading-relaxed mb-6">
+                Apakah Anda yakin ingin menghapus buku <span id="delete-book-title" class="font-bold text-gray-900 font-sans not-italic"></span>? Tindakan ini bersifat permanen dan tidak dapat dibatalkan.
+            </p>
+
+            <!-- Form Tersembunyi Berjenis DELETE menuju Route Controller -->
+            <form id="form-delete-book" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeDeleteModal()" class="w-1/2 border border-gray-300 text-gray-700 py-3 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 bg-red-600 text-white py-3 rounded-xl text-xs font-bold shadow-md hover:bg-red-700 transition-all">
+                        Ya, Hapus Buku
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </main>
+
+<script>
+    function openDeleteModal(bookId, bookTitle) {
+        document.getElementById('delete-book-title').innerText = bookTitle;
+        
+        // Menyuntikkan URL rute hapus secara dinamis berdasarkan ID buku yang diklik
+        const form = document.getElementById('form-delete-book');
+        form.action = `/home/seller/book/delete/${bookId}`;
+
+        // Jalankan animasi transisi membuka modal popup
+        const modal = document.getElementById('deleteBookModal');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.firstElementChild.classList.remove('scale-95');
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteBookModal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.firstElementChild.classList.add('scale-95');
+    }
+</script>
 @endsection

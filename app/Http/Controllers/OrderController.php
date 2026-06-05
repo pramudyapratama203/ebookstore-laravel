@@ -15,7 +15,7 @@ class OrderController extends Controller
             ->orderByDesc('id')
             ->get();
             
-        return view('order.showorder', compact('orders'));
+        return view('order.buyer.showorder', compact('orders'));
     }
     public function buyerOrders()
     {
@@ -24,29 +24,51 @@ class OrderController extends Controller
             ->orderByDesc('id')
             ->paginate(10);
 
-        return view('order.showorder', compact('orders'));
+        return view('order.buyer.showorder', compact('orders'));
     }
 
     public function sellerOrders()
     {
-        $sellerBooks = Auth::user()->books->pluck('id');
+        $sellerBooks = Auth::user()->books()->pluck('id');
 
         $orders = Order::whereIn('book_id', $sellerBooks)
             ->with('book', 'buyer')
             ->orderByDesc('id')
             ->paginate(10);
 
-        return view('orders.seller', compact('orders'));
+        return view('order.seller.showorder', compact('orders'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(Request $request, $id)
     {
-        if ($order->book->seller_id !== Auth::id()) {
-            abort(403);
-        }
+        $order = Order::findOrFail($id);
+        
+        $request->validate([
+            'status' => 'required|in:processing,completed,cancelled'
+        ]);
 
-        $order->update(['status' => $request->status]);
+        $order->update([
+            'status' => $request->status
+        ]);
 
-        return back()->with('success', 'Status pesanan diperbarui!');
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
+    }
+
+    public function storeRating(Request $request, $id)
+    {
+        $order = Order::where('id', $id)->where('buyer_id', Auth::id())->firstOrFail();
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string|min:5|max:1000',
+        ]);
+
+        $order->update([
+            'rating' => $request->rating,
+            'review' => $request->review,
+            'status' => 'completed',
+        ]);
+
+        return redirect()->back()->with('success', 'Terima kasih! Ulasan Anda berhasil disimpan.');
     }
 }

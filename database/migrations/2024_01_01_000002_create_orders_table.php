@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedInteger('total');
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
             $table->date('date');
-            $table->text('description')->nullable();
+            $table->unsignedTinyInteger('rating')->nullable();
+            $table->text('review')->nullable();
             $table->timestamps();
             
             $table->index('buyer_id');

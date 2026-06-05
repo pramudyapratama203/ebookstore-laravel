@@ -14,7 +14,7 @@
                 Katalog Saya
             </a>
             
-            <a class=" text-[#7a4f37]" href="">
+            <a class=" text-[#7a4f37]" href="{{ route('order.seller') }}">
                 Order Anda
             </a>
         </nav>

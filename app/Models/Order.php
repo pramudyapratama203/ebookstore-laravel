@@ -17,6 +17,8 @@ class Order extends Model
         'status',
         'date',
         'description',
+        'rating',
+        'review',
     ];
 
     protected function casts(): array
