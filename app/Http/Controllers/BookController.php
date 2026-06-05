@@ -108,6 +108,55 @@ class BookController extends Controller
 
         return view('dashboard.seller.detailcatalog', compact('book'));
     }
+
+    public function showAdminCatalog()
+    {
+        $books = Book::with('seller')->orderByDesc('id')->paginate(12);
+        $categories = Category::all();
+
+        return view('dashboard.admin.catalog', compact('books', 'categories'));
+    }
+
+    public function searchAdminBook(Request $request)
+    {
+        $query = Book::query();
+
+        if ($request->filled('search-inventory')) {
+            $search = $request->get('search-inventory');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->get('category'));
+        }
+
+        if ($request->filled('filter-status')) {
+            $status = $request->get('filter-status');
+            if ($status === 'in_stock') {
+                $query->where('stock', '>', 5);
+            } elseif ($status === 'low_stock') {
+                $query->whereBetween('stock', [1, 5]);
+            } elseif ($status === 'out_of_stock') {
+                $query->where('stock', '=', 0);
+            }
+        }
+
+        $books = $query->with('seller')->orderByDesc('id')->paginate(12)->withQueryString();
+
+        $categories = Category::all();
+
+        return view('dashboard.admin.catalog', compact('books', 'categories'));
+    }
+
+    public function showAdminBookById($id)
+    {
+        $book = Book::with('seller')->findOrFail($id);
+
+        return view('dashboard.admin.detailcatalog', compact('book'));
+    }
     public function create()
     {
         $categories = Category::all();
@@ -152,20 +201,28 @@ class BookController extends Controller
             'pages'       => 0,
         ]);
 
-        return redirect()->route('seller.catalog')->with('success', 'Buku berhasil ditambahkan!');
+        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+        return redirect()->route($redirectRoute)->with('success', 'Buku berhasil ditambahkan!');
     }
 
     public function editCategory($id)
     {
-        // Cari data buku berdasarkan ID untuk mengambil data kategori saat ini
-        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
-        
+        $book = Book::findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && $book->seller_id !== Auth::id()) {
+            abort(403);
+        }
+
         return view('books.updatebook', compact('book'));
     }
 
     public function updateCategory(Request $request, $id)
     {
-        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+        $book = Book::findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && $book->seller_id !== Auth::id()) {
+            abort(403);
+        }
 
         $request->validate([
             'title'       => 'required|string|max:255',
@@ -181,21 +238,24 @@ class BookController extends Controller
             'pages' => 'required|integer|min:1',
         ]);
 
-        // Update seluruh data buku secara massal
         $book->update($request->all());
 
-        return redirect()->route('seller.catalog')->with('success', 'Informasi buku berhasil diperbarui!');
+        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+        return redirect()->route($redirectRoute)->with('success', 'Informasi buku berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        // 1. Cari data buku milik seller yang bersangkutan agar aman dari seller lain
-        $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
+        $book = Book::findOrFail($id);
 
-        // 2. Hapus data buku dari database
+        // Admin dapat menghapus buku apa pun; seller hanya bisa menghapus bukunya sendiri
+        if (Auth::user()->role !== 'admin' && $book->seller_id !== Auth::id()) {
+            abort(403);
+        }
+
         $book->delete();
 
-        // 3. Alihkan kembali ke halaman katalog dengan pesan sukses
-        return redirect()->route('seller.catalog')->with('success', 'Buku berhasil dihapus dari katalog Anda!');
+        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+        return redirect()->route($redirectRoute)->with('success', 'Buku berhasil dihapus dari katalog!');
     }
 }

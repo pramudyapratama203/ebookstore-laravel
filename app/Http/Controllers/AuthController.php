@@ -38,7 +38,7 @@ class AuthController extends Controller
             }
 
             if (Auth::user()->isAdmin()) {
-                return redirect()->route('home.admin');
+                return redirect()->route('admin.dashboard');
             }
         }
 

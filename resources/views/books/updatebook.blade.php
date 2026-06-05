@@ -1,4 +1,4 @@
-@extends('layouts.seller')
+@extends(Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.seller')
 
 @section('title', 'Edit Buku')
 
@@ -24,7 +24,7 @@
             </p>
         </div>
 
-        <form action="{{ route('seller.category.update', $book->id) }}" method="POST">
+        <form action="{{ route(Auth::user()->role === 'admin' ? 'admin.category.update' : 'seller.category.update', $book->id) }}" method="POST">
             @csrf
             @method('PUT')
             
@@ -198,7 +198,7 @@
                                 <span class="material-symbols-outlined text-base">save</span>
                                 Simpan Perubahan
                             </button>
-                            <a href="{{ route('seller.catalog') }}" class="w-full border border-white/20 text-white font-bold py-3.5 text-sm hover:bg-white/10 active:scale-[0.98] transition-all duration-200 rounded-xl text-center block">
+                            <a href="{{ route(Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog') }}" class="w-full border border-white/20 text-white font-bold py-3.5 text-sm hover:bg-white/10 active:scale-[0.98] transition-all duration-200 rounded-xl text-center block">
                                 Batal
                             </a>
                         </div>

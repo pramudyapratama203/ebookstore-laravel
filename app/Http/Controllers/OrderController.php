@@ -39,6 +39,15 @@ class OrderController extends Controller
         return view('order.seller.showorder', compact('orders'));
     }
 
+    public function adminOrders()
+    {
+        $orders = Order::with('book', 'buyer', 'book.seller')
+            ->orderByDesc('id')
+            ->paginate(10);
+
+        return view('order.admin.showorder', compact('orders'));
+    }
+
     public function updateStatus(Request $request, $id)
     {
         $order = Order::findOrFail($id);

@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminDashboardController;
 
 // Buyer Book
 Route::get('/home/buyer', [BookController::class, 'showBookToBuyer'])->name('home.buyer');
@@ -23,10 +24,17 @@ Route::put('/home/seller/category/update/{id}', [BookController::class, 'updateC
 Route::delete('/home/seller/book/delete/{id}', [BookController::class, 'destroy'])->name('seller.book.delete');
 Route::get('/home/seller/catalog/detail/{id}', [BookController::class, 'showSellerBookById'])->name('seller.catalog.detail');
 
-// Admin
-Route::get('/home/admin', function () {
-    return view('dasboard.admin.home');
-})->name('home.admin');
+// Admin 
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/admin/catalog', [BookController::class, 'showAdminCatalog'])->name('admin.catalog');
+Route::get('/admin/catalog/search', [BookController::class, 'searchAdminBook'])->name('admin.search');
+Route::get('/admin/create', [BookController::class, 'create'])->name('admin.create');
+Route::post('/admin/create', [BookController::class, 'store'])->name('admin.store');
+Route::get('/admin/category/edit/{id}', [BookController::class, 'editCategory'])->name('admin.category.edit');
+Route::put('/admin/category/update/{id}', [BookController::class, 'updateCategory'])->name('admin.category.update');
+Route::delete('/admin/book/delete/{id}', [BookController::class, 'destroy'])->name('admin.book.delete');
+Route::get('/admin/catalog/detail/{id}', [BookController::class, 'showAdminBookById'])->name('admin.catalog.detail');
+Route::get('/admin/orders', [OrderController::class, 'adminOrders'])->name('admin.orders');
 
 // Cart
 Route::get('/home/buyer/cart', [CartController::class, 'index'])->name('cart.index');
