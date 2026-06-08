@@ -25,6 +25,7 @@ class Book extends Model
         'publisher',
         'year',
         'stock',
+        'file_path',
     ];
 
     protected function casts(): array

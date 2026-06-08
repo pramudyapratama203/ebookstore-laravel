@@ -5,6 +5,20 @@
 @section('content')
 <div class="pt-24 pb-20 bg-gray-50 min-h-screen">
     <div class="container mx-auto px-6 max-w-4xl">
+
+        @if(session('success'))
+            <div id="cart-success-alert" class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm transition-all duration-500">
+                <span class="material-symbols-outlined text-green-600">check_circle</span>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div id="cart-error-alert" class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined text-red-600">error</span>
+                {{ session('error') }}
+            </div>
+        @endif
         
         <h1 class="font-['Playfair_Display'] text-3xl font-bold text-gray-900 mb-8">Keranjang Belanja</h1>
 

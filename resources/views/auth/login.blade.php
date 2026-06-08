@@ -3,11 +3,14 @@
 @section('title', 'Sign In')
 
 @section('content')
-<div class="pt-24 pb-20 flex items-center justify-center min-h-screen bg-gray-50">
-    <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+<div class="pt-24 pb-20 flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md animate-fade-in-up">
         
-        <div class="mb-8 text-center">
-            <h2 class="font-['Playfair_Display'] text-3xl font-bold text-gray-900">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#c8a96e] to-[#7a4f37] shadow-lg shadow-[#c8a96e]/20 mb-6">
+                <span class="material-symbols-outlined text-white text-3xl">auto_stories</span>
+            </div>
+            <h2 class="font-['Literata'] text-3xl font-bold text-white">
                 Selamat Datang
             </h2>
             <p class="mt-2 text-sm text-[#a09880]">
@@ -15,76 +18,85 @@
             </p>
         </div>
 
-        <!-- Status Sesi Auth jika menggunakan komponen Laravel Breeze asli -->
-        @if (session('status'))
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ session('status') }}
-            </div>
-        @endif
+        <div class="bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl">
+            
+            @if (session('status'))
+                <div class="mb-4 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400">
+                    {{ session('status') }}
+                </div>
+            @endif
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
-            @csrf
+            @if (session('success'))
+                <div class="mb-4 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20 text-sm text-green-400 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                    {{ session('success') }}
+                </div>
+            @endif
 
-            <!-- Input Email -->
-            <div>
-                <label for="email" class="block text-xs uppercase tracking-wider text-[#a09880] mb-2 font-semibold">Email Address</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="nama@email.com"
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c8a96e]">
-                
-                @error('email')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
-            </div>
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
 
-            <!-- Input Password -->
-            <div class="mt-4">
-                <label for="password" class="block text-xs uppercase tracking-wider text-[#a09880] mb-2 font-semibold">Password</label>
-                <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••"
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c8a96e]">
+                <div>
+                    <label for="email" class="block text-xs uppercase tracking-wider text-[#a09880] mb-2 font-semibold">Email</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#a09880]">
+                            <span class="material-symbols-outlined text-sm">mail</span>
+                        </span>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="nama@email.com"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-[#c8a96e] focus:ring-1 focus:ring-[#c8a96e]/30 transition-all">
+                    </div>
+                    @error('email')
+                        <p class="text-red-400 text-xs mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-xs">error</span> {{ $message }}</p>
+                    @enderror
+                </div>
 
-                @error('password')
-                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
-                @enderror
-            </div>
+                <div>
+                    <label for="password" class="block text-xs uppercase tracking-wider text-[#a09880] mb-2 font-semibold">Password</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#a09880]">
+                            <span class="material-symbols-outlined text-sm">lock</span>
+                        </span>
+                        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-[#c8a96e] focus:ring-1 focus:ring-[#c8a96e]/30 transition-all">
+                    </div>
+                    @error('password')
+                        <p class="text-red-400 text-xs mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-xs">error</span> {{ $message }}</p>
+                    @enderror
+                </div>
 
-            <!-- Ingat Saya -->
-            <div class="flex items-center justify-between mt-4">
-                <label for="remember_me" class="inline-flex items-center cursor-pointer">
-                    <input id="remember_me" type="checkbox" name="remember" class="rounded border-gray-300 text-[#c8a96e] focus:ring-[#c8a96e]">
-                    <span class="ms-2 text-sm text-gray-600">Ingat saya</span>
-                </label>
-            </div>
+                <div class="flex items-center justify-between">
+                    <label for="remember_me" class="inline-flex items-center cursor-pointer group">
+                        <input id="remember_me" type="checkbox" name="remember" class="rounded border-white/20 bg-white/10 text-[#c8a96e] focus:ring-[#c8a96e] focus:ring-offset-0">
+                        <span class="ms-2 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Ingat saya</span>
+                    </label>
+                </div>
 
-            <!-- Tombol Masuk -->
-            <div class="mt-6">
-                <button type="submit" class="w-full justify-center py-3 text-sm font-bold uppercase tracking-widest bg-[#c8a96e] text-white rounded-xl hover:bg-[#b0925a] transition duration-150 shadow-md">
+                <button type="submit" class="w-full py-3 text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-[#c8a96e] to-[#b58a4a] text-white rounded-xl hover:from-[#b89a5e] hover:to-[#a37a3a] active:scale-[0.98] transition-all duration-200 shadow-lg shadow-[#c8a96e]/20">
                     Masuk Sekarang
                 </button>
-            </div>
 
-            <!-- Pembatas -->
-            <div class="relative my-6">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-200"></div>
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-white/10"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-3 bg-transparent text-gray-500">Atau</span>
+                    </div>
                 </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-gray-500">Atau</span>
-                </div>
-            </div>
 
-            <!-- Tautan Registrasi & Lupa Password -->
-            <div class="text-center space-y-2 flex flex-col">
-                <p class="text-sm text-gray-600">
-                    Belum punya akun? 
-                    <a href="{{ route('register') }}" class="font-bold text-[#c8a96e] hover:text-[#b0925a] transition duration-150">
-                        Daftar di sini
+                <div class="text-center space-y-2">
+                    <p class="text-sm text-gray-400">
+                        Belum punya akun? 
+                        <a href="{{ route('register') }}" class="font-bold text-[#c8a96e] hover:text-[#d4b87a] transition-colors">
+                            Daftar di sini
+                        </a>
+                    </p>
+                    <a href="{{ route('password.request') }}" class="text-sm text-gray-500 hover:text-[#c8a96e] transition-colors">
+                        Lupa Password?
                     </a>
-                </p>
-                <a href="{{ route('password.request') }}" class="text-sm text-gray-500 hover:text-[#c8a96e] transition duration-150">
-                    Lupa Password?
-                </a>
-            </div> 
-        </form>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

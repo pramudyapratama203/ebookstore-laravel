@@ -7,6 +7,8 @@ use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
@@ -182,12 +184,18 @@ class BookController extends Controller
             'publisher'   => 'nullable|string|max:255',
             'language'    => 'required|string|max:255',
             'description' => 'nullable|string',
+            'file'        => 'nullable|file|mimes:pdf,epub,mobi|max:102400',
         ]);
 
         
         $finalColor = $request->filled('cover_color_custom') 
                     ? $request->input('cover_color_custom') 
                     : $request->input('cover_color', '#5f3822');
+
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('books', 'public');
+        }
 
         Book::create([
             'seller_id'   => Auth::id(),
@@ -201,6 +209,7 @@ class BookController extends Controller
             'price'       => $validated['price'],
             'stock'       => $validated['stock'],
             'cover_color' => $finalColor, 
+            'file_path'   => $filePath,
             
             'rating'      => 0,
             'sold'        => 0,
@@ -251,10 +260,20 @@ class BookController extends Controller
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0',
             'cover_color' => 'required|string',
-            'pages' => 'required|integer|min:1',
+            'pages'       => 'required|integer|min:1',
+            'file'        => 'nullable|file|mimes:pdf,epub,mobi|max:102400',
         ]);
 
-        $book->update($request->all());
+        $data = $request->except('file');
+
+        if ($request->hasFile('file')) {
+            if ($book->file_path) {
+                Storage::disk('public')->delete($book->file_path);
+            }
+            $data['file_path'] = $request->file('file')->store('books', 'public');
+        }
+
+        $book->update($data);
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
 
@@ -264,6 +283,26 @@ class BookController extends Controller
         return redirect()->route($redirectRoute)->with('success', 'Informasi buku berhasil diperbarui!');
     }
 
+    public function download($id)
+    {
+        $order = \App\Models\Order::where('id', $id)
+            ->where('buyer_id', Auth::id())
+            ->where('status', 'completed')
+            ->with('book')
+            ->firstOrFail();
+
+        $book = $order->book;
+
+        if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
+            return redirect()->back()->with('error', 'File buku tidak tersedia.');
+        }
+
+        $extension = pathinfo($book->file_path, PATHINFO_EXTENSION);
+        $filename = Str::slug($book->title) . '.' . ($extension ?: 'pdf');
+
+        return Storage::disk('public')->download($book->file_path, $filename);
+    }
+
     public function destroy($id)
     {
         $book = Book::findOrFail($id);
@@ -271,6 +310,10 @@ class BookController extends Controller
         // Admin dapat menghapus buku apa pun; seller hanya bisa menghapus bukunya sendiri
         if (Auth::user()->role !== 'admin' && $book->seller_id !== Auth::id()) {
             abort(403);
+        }
+
+        if ($book->file_path) {
+            Storage::disk('public')->delete($book->file_path);
         }
 
         $bookTitle = $book->title;

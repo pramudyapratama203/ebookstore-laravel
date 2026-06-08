@@ -3,14 +3,14 @@
 @section('title', 'E-Bookstore - Pencarian')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen">
+<div class="min-h-screen">
     <main class="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-16 py-12 pt-32">
         
         <div class="mb-10">
-            <h2 class="font-['Playfair_Display'] text-3xl sm:text-5xl font-bold text-[#5f3822] mb-3">
+            <h2 class="font-['Literata'] text-3xl sm:text-5xl font-bold text-[#5f3822] mb-3">
                 Hasil Pencarian
             </h2>
-            <div class="w-16 h-1 bg-[#5f3822] mb-4 rounded-full"></div>
+            <div class="w-16 h-1 bg-gradient-to-r from-[#7a4f37] to-[#c8a96e] mb-4 rounded-full"></div>
             <p class="text-sm sm:text-base text-gray-500 font-medium">
                 @if($books->count() > 0)
                     Menampilkan <span class="text-[#5f3822] font-bold">{{ $books->total() }}</span> karya terbaik untuk kata kunci <em class="text-gray-800 font-semibold">"{{ request('q') }}"</em>

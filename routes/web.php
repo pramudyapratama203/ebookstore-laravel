@@ -54,6 +54,7 @@ Route::get('/home/seller/order', [OrderController::class, 'sellerOrders'])->name
 
 // Rating Buyer
 Route::post('/home/buyer/order/rate/{id}', [OrderController::class, 'storeRating'])->name('buyer.orders.store-rating');
+Route::get('/home/buyer/order/download/{id}', [BookController::class, 'download'])->name('buyer.order.download');
 
 // Order Detail
 Route::get('/home/buyer/order/detail/{id}', [OrderController::class, 'buyerOrderDetail'])->name('order.buyer.detail');

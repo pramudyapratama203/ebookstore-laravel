@@ -24,7 +24,7 @@
             </p>
         </div>
 
-        <form action="{{ route(Auth::user()->role === 'admin' ? 'admin.store' : 'seller.store') }}" method="POST">
+        <form action="{{ route(Auth::user()->role === 'admin' ? 'admin.store' : 'seller.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
                 
@@ -99,6 +99,23 @@
                                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm select-none"><span class="material-symbols-outlined text-base align-middle">inventory_2</span></span>
                                     <input type="number" name="stock" min="0" class="w-full bg-[#fcf9f0]/20 border border-gray-200 py-3 pl-10 pr-4 text-sm rounded-xl focus:outline-none focus:border-[#5f3822] focus:ring-1 focus:ring-[#5f3822] text-center text-gray-900 font-semibold transition-all" placeholder="12" required/>
                                 </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-white border border-[#e8dfd1] p-6 sm:p-8 rounded-2xl shadow-[0_4px_20px_-2px_rgba(122,79,55,0.03)] transition-all duration-300 hover:shadow-[0_6px_24px_-2px_rgba(122,79,55,0.05)]">
+                        <div class="flex items-center gap-3 mb-6 sm:mb-8 border-b border-gray-100 pb-4">
+                            <span class="material-symbols-outlined text-[#5f3822] text-xl sm:text-2xl">upload_file</span>
+                            <h3 class="text-base sm:text-lg text-gray-900 font-bold tracking-wide">Upload File Buku</h3>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-2 text-gray-700 uppercase tracking-wider">File E-book (PDF/EPUB/MOBI)</label>
+                            <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#5f3822] transition-colors cursor-pointer" onclick="document.getElementById('file-input').click()">
+                                <span class="material-symbols-outlined text-3xl text-gray-300 block mb-2">cloud_upload</span>
+                                <p class="text-sm text-gray-500">Klik untuk upload file buku digital</p>
+                                <p class="text-xs text-gray-400 mt-1">Maks 100MB, format: PDF, EPUB, MOBI</p>
+                                <input id="file-input" type="file" name="file" accept=".pdf,.epub,.mobi" class="hidden" onchange="updateFileName(this)">
+                                <div id="file-name" class="mt-3 text-xs text-[#5f3822] font-semibold hidden"></div>
                             </div>
                         </div>
                     </section>
@@ -244,5 +261,13 @@
             }
         });
     });
+
+    function updateFileName(input) {
+        const nameDiv = document.getElementById('file-name');
+        if (input.files.length > 0) {
+            nameDiv.textContent = input.files[0].name;
+            nameDiv.classList.remove('hidden');
+        }
+    }
 </script>
 @endsection

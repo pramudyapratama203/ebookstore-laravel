@@ -1,4 +1,4 @@
-<header class="bg-surface border-b border-outline-variant fixed top-0 w-full z-50">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
     <div class="flex justify-between items-center w-full px-4 sm:px-16 max-w-[1280px] mx-auto h-20">
 
         <div class="flex items-center gap-3">
@@ -6,48 +6,42 @@
                 <span class="material-symbols-outlined" id="admin-menu-icon">menu</span>
             </button>
 
-            <div class="font-bold text-2xl text-[#7a4f37]">
+            <a href="{{ route('admin.dashboard') }}" class="font-bold text-2xl bg-gradient-to-r from-[#7a4f37] to-[#c8a96e] bg-clip-text text-transparent">
                 E-Bookstore
-            </div>
+            </a>
         </div>
 
-        <nav class="hidden md:flex items-center gap-8">
-            <a class=" text-[#7a4f37]" href="{{ route('admin.dashboard') }}">
+        <nav class="hidden md:flex items-center gap-1">
+            <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Dashboard
             </a>
-
-            <a class=" text-[#7a4f37]" href="{{ route('admin.catalog') }}">
+            <a href="{{ route('admin.catalog') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.catalog') || request()->routeIs('admin.search') || request()->routeIs('admin.create') || request()->routeIs('admin.category.*') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Katalog
             </a>
-            
-            <a class=" text-[#7a4f37]" href="{{ route('admin.orders') }}">
+            <a href="{{ route('admin.orders') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.orders') || request()->routeIs('admin.orders.*') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Order
             </a>
-
-            <a class=" text-[#7a4f37]" href="{{ route('admin.activity-logs') }}">
+            <a href="{{ route('admin.activity-logs') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.activity-logs') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Log Aktivitas
             </a>
         </nav>
 
         <div class="flex items-center gap-3">
-
             <a href="{{ route('profile.admin.show') }}">
-                <button class="p-2 text-[#7a4f37]">
-                    <span class="material-symbols-outlined">
-                        account_circle
-                    </span>
+                <button class="p-2.5 text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all">
+                    <span class="material-symbols-outlined">account_circle</span>
                 </button>
             </a>
-
         </div>
     </div>
 
-    <div id="admin-mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 px-4 sm:px-16 py-4 space-y-3 shadow-lg">
-        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Dashboard</a>
-        <a href="{{ route('admin.catalog') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Katalog</a>
-        <a href="{{ route('admin.orders') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Order</a>
-        <a href="{{ route('admin.activity-logs') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Log Aktivitas</a>
-        <a href="{{ route('profile.admin.show') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Profil Saya</a>
+    <div id="admin-mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-lg border-t border-gray-200/50 px-4 sm:px-16 py-4 space-y-2 shadow-xl">
+        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[#f4dfcb]/60' : '' }}">Dashboard</a>
+        <a href="{{ route('admin.catalog') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.catalog') || request()->routeIs('admin.search') || request()->routeIs('admin.category.*') ? 'bg-[#f4dfcb]/60' : '' }}">Katalog</a>
+        <a href="{{ route('admin.orders') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.orders.*') ? 'bg-[#f4dfcb]/60' : '' }}">Order</a>
+        <a href="{{ route('admin.activity-logs') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('admin.activity-logs') ? 'bg-[#f4dfcb]/60' : '' }}">Log Aktivitas</a>
+        <hr class="border-gray-100 my-2">
+        <a href="{{ route('profile.admin.show') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('profile.admin.*') ? 'bg-[#f4dfcb]/60' : '' }}">Profil Saya</a>
     </div>
 </header>
 

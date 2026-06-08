@@ -1,4 +1,4 @@
-<header class="bg-surface border-b border-outline-variant fixed top-0 w-full z-50">
+<header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
     <div class="flex justify-between items-center w-full px-4 sm:px-16 max-w-[1280px] mx-auto h-20">
 
         <div class="flex items-center gap-3">
@@ -6,42 +6,38 @@
                 <span class="material-symbols-outlined" id="seller-menu-icon">menu</span>
             </button>
 
-            <div class="font-bold text-2xl text-[#7a4f37]">
+            <a href="{{ route('home.seller') }}" class="font-bold text-2xl bg-gradient-to-r from-[#7a4f37] to-[#c8a96e] bg-clip-text text-transparent">
                 E-Bookstore
-            </div>
+            </a>
         </div>
 
-        <nav class="hidden md:flex items-center gap-8">
-            <a class=" text-[#7a4f37]" href="{{ route('home.seller') }}">
+        <nav class="hidden md:flex items-center gap-1">
+            <a href="{{ route('home.seller') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('home.seller') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Dashboard
             </a>
-
-            <a class=" text-[#7a4f37]" href="{{ route('seller.catalog') }}">
+            <a href="{{ route('seller.catalog') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('seller.catalog') || request()->routeIs('seller.*') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Katalog Saya
             </a>
-            
-            <a class=" text-[#7a4f37]" href="{{ route('order.seller') }}">
+            <a href="{{ route('order.seller') }}" class="px-4 py-2 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('order.seller') || request()->routeIs('seller.order*') ? 'bg-[#f4dfcb]/60' : '' }}">
                 Order Anda
             </a>
         </nav>
 
         <div class="flex items-center gap-3">
             <a href="{{ route('profile.seller.show') }}">
-                <button class="p-2 text-[#7a4f37]">
-                    <span class="material-symbols-outlined">
-                        account_circle
-                    </span>
+                <button class="p-2.5 text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all">
+                    <span class="material-symbols-outlined">account_circle</span>
                 </button>
             </a>
-
         </div>
     </div>
 
-    <div id="seller-mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200 px-4 sm:px-16 py-4 space-y-3 shadow-lg">
-        <a href="{{ route('home.seller') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Dashboard</a>
-        <a href="{{ route('seller.catalog') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Katalog Saya</a>
-        <a href="{{ route('order.seller') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Order Anda</a>
-        <a href="{{ route('profile.seller.show') }}" class="block px-4 py-2.5 text-sm font-semibold text-[#7a4f37] bg-[#f4dfcb]/30 rounded-xl hover:bg-[#f4dfcb]/60 transition-all">Profil Saya</a>
+    <div id="seller-mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-lg border-t border-gray-200/50 px-4 sm:px-16 py-4 space-y-2 shadow-xl">
+        <a href="{{ route('home.seller') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('home.seller') ? 'bg-[#f4dfcb]/60' : '' }}">Dashboard</a>
+        <a href="{{ route('seller.catalog') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('seller.catalog') || request()->routeIs('seller.*') ? 'bg-[#f4dfcb]/60' : '' }}">Katalog Saya</a>
+        <a href="{{ route('order.seller') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('order.seller') || request()->routeIs('seller.order*') ? 'bg-[#f4dfcb]/60' : '' }}">Order Anda</a>
+        <hr class="border-gray-100 my-2">
+        <a href="{{ route('profile.seller.show') }}" class="block px-4 py-3 text-sm font-semibold text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all {{ request()->routeIs('profile.seller.*') ? 'bg-[#f4dfcb]/60' : '' }}">Profil Saya</a>
     </div>
 </header>
 

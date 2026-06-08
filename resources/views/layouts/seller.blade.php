@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'E-BookStore')</title>
-    @vite(['resources/css/app.css', 'resources/css/style.css'])
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Source+Serif+4:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    @stack('styles')
 </head>
-<body class="bg-[#0f0e0b] text-[#e8e0d0]">
+<body class="font-body-md text-on-surface bg-[#fcf9f0]">
     @include('layouts.partials.seller.navbar')
     
     <main>
@@ -15,6 +18,6 @@
     
     @include('layouts.partials.seller.footer')
     
-    @vite('resources/js/app.js')
+    @stack('scripts')
 </body>
 </html>

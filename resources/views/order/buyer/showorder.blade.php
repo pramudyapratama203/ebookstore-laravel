@@ -122,7 +122,14 @@
                                 </button>
                             @endif
 
-                            <!-- REVISI PERBAIKAN: Menggunakan is_null yang benar untuk mendeteksi ulasan yang sukses tersimpan -->
+                            @if($order->status == 'completed' && $order->book && $order->book->file_path)
+                                <a href="{{ route('buyer.order.download', $order->id) }}" class="w-full sm:w-auto block">
+                                    <button type="button" class="w-full px-5 py-2 bg-gradient-to-r from-[#5f3822] to-[#7a4f37] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:shadow-md active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-sm">download</span> Download
+                                    </button>
+                                </a>
+                            @endif
+
                             @if(!is_null($order->rating))
                                 <span class="text-xs text-green-600 font-bold flex items-center gap-1 bg-green-50 px-3 py-1.5 rounded-lg border border-green-200/60 shadow-sm select-none">
                                     <span class="material-symbols-outlined text-sm fill-green-600" style="font-variation-settings: 'FILL' 1">check_circle</span> Telah Diulas

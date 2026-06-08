@@ -124,6 +124,14 @@
                         </button>
                     @endif
 
+                    @if($order->status == 'completed' && $order->book && $order->book->file_path)
+                        <a href="{{ route('buyer.order.download', $order->id) }}">
+                            <button type="button" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#5f3822] to-[#7a4f37] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:shadow-md active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-1.5">
+                                <span class="material-symbols-outlined text-sm">download</span> Download Buku
+                            </button>
+                        </a>
+                    @endif
+
                     @if($order->status == 'pending' || $order->status == 'processing')
                         <form action="{{ route('buyer.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
                             @csrf
