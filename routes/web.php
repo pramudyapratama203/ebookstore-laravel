@@ -35,6 +35,7 @@ Route::put('/admin/category/update/{id}', [BookController::class, 'updateCategor
 Route::delete('/admin/book/delete/{id}', [BookController::class, 'destroy'])->name('admin.book.delete');
 Route::get('/admin/catalog/detail/{id}', [BookController::class, 'showAdminBookById'])->name('admin.catalog.detail');
 Route::get('/admin/orders', [OrderController::class, 'adminOrders'])->name('admin.orders');
+Route::get('/admin/activity-logs', [AdminDashboardController::class, 'activityLogs'])->name('admin.activity-logs');
 
 // Cart
 Route::get('/home/buyer/cart', [CartController::class, 'index'])->name('cart.index');
@@ -54,9 +55,27 @@ Route::get('/home/seller/order', [OrderController::class, 'sellerOrders'])->name
 // Rating Buyer
 Route::post('/home/buyer/order/rate/{id}', [OrderController::class, 'storeRating'])->name('buyer.orders.store-rating');
 
+// Order Detail
+Route::get('/home/buyer/order/detail/{id}', [OrderController::class, 'buyerOrderDetail'])->name('order.buyer.detail');
+Route::get('/home/seller/order/detail/{id}', [OrderController::class, 'sellerOrderDetail'])->name('order.seller.detail');
+Route::get('/admin/orders/detail/{id}', [OrderController::class, 'adminOrderDetail'])->name('admin.orders.detail');
+
+// Cancel Order
+Route::post('/home/buyer/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('buyer.orders.cancel');
+Route::post('/home/seller/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('seller.orders.cancel');
+Route::post('/admin/orders/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('admin.orders.cancel');
+
 // Profile
 Route::get('/home/buyer/profile', [UsersController::class, 'showUserProfile'])->name('profile.buyer.show');
+Route::put('/home/buyer/profile', [UsersController::class, 'updateProfile'])->name('profile.buyer.update');
+Route::delete('/home/buyer/profile', [UsersController::class, 'destroyAccount'])->name('profile.buyer.destroy');
 Route::get('/home/seller/profile', [UsersController::class, 'showSellerProfile'])->name('profile.seller.show');
+Route::put('/home/seller/profile', [UsersController::class, 'updateProfile'])->name('profile.seller.update');
+Route::delete('/home/seller/profile', [UsersController::class, 'destroyAccount'])->name('profile.seller.destroy');
+
+Route::get('/admin/profile', [UsersController::class, 'showAdminProfile'])->name('profile.admin.show');
+Route::put('/admin/profile', [UsersController::class, 'updateProfile'])->name('profile.admin.update');
+Route::delete('/admin/profile', [UsersController::class, 'destroyAccount'])->name('profile.admin.destroy');
 
 
 require __DIR__.'/auth.php';

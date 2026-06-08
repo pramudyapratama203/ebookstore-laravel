@@ -29,16 +29,31 @@
         </section>
 
         
-        <form action="#" method="POST" class="bg-white p-6 sm:p-10 rounded-2xl border border-[#e8dfd1] shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-6">
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined text-green-600">check_circle</span>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined text-red-600">error</span>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <form action="{{ route('profile.buyer.update') }}" method="POST" class="bg-white p-6 sm:p-10 rounded-2xl border border-[#e8dfd1] shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-6">
             @csrf
-            
+            @method('PUT')
             
             <div class="flex flex-col space-y-1.5">
                 <label class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5" for="full-name">
                     <span class="material-symbols-outlined text-sm text-[#5f3822]">person</span> Nama Lengkap
                 </label>
                 <input class="w-full bg-[#fcf9f0]/40 border border-gray-200 focus:outline-none focus:border-[#5f3822] focus:ring-1 focus:ring-[#5f3822] rounded-xl p-3.5 text-gray-800 text-sm transition-all shadow-inner" 
-                       id="full-name" name="name" type="text" value="{{ $user->name }}"/>
+                       id="full-name" name="name" type="text" value="{{ old('name', $user->name) }}"/>
+                @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="flex flex-col space-y-1.5">
@@ -46,7 +61,8 @@
                     <span class="material-symbols-outlined text-sm text-[#5f3822]">mail</span> Alamat Email
                 </label>
                 <input class="w-full bg-[#fcf9f0]/40 border border-gray-200 focus:outline-none focus:border-[#5f3822] focus:ring-1 focus:ring-[#5f3822] rounded-xl p-3.5 text-gray-800 text-sm transition-all shadow-inner" 
-                       id="email" name="email" type="email" value="{{ $user->email }}"/>
+                       id="email" name="email" type="email" value="{{ old('email', $user->email) }}"/>
+                @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="flex flex-col space-y-1.5">
@@ -54,7 +70,8 @@
                     <span class="material-symbols-outlined text-sm text-[#5f3822]">call</span> Nomor Telepon
                 </label>
                 <input class="w-full bg-[#fcf9f0]/40 border border-gray-200 focus:outline-none focus:border-[#5f3822] focus:ring-1 focus:ring-[#5f3822] rounded-xl p-3.5 text-gray-800 text-sm transition-all shadow-inner" 
-                       id="phone" name="phone" type="tel" value="{{ $user->phone }}"/>
+                       id="phone" name="phone" type="tel" value="{{ old('phone', $user->profile->phone ?? '') }}"/>
+                @error('phone') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
             
             <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4 border-t border-gray-50">
@@ -67,6 +84,24 @@
                     <span class="material-symbols-outlined text-sm">logout</span>
                     <span id="logout-text">Keluar Akun</span>
                 </a>
+            </div>
+        </form>
+
+        <form action="{{ route('profile.buyer.destroy') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun? Semua data akan hilang dan tidak dapat dikembalikan.')">
+            @csrf
+            @method('DELETE')
+            <div class="bg-white p-6 sm:p-10 rounded-2xl border border-red-200 shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-4">
+                <h3 class="font-['Literata'] text-lg font-bold text-red-700">Hapus Akun</h3>
+                <p class="text-xs text-gray-500">Setelah akun dihapus, semua data terkait akan dihapus secara permanen.</p>
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider" for="delete-password">Masukkan Password untuk Konfirmasi</label>
+                    <input class="w-full bg-[#fcf9f0]/40 border border-red-200 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-xl p-3.5 text-gray-800 text-sm" 
+                           id="delete-password" name="password" type="password" placeholder="Password Anda" required/>
+                </div>
+                @error('password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                <button type="submit" class="w-full px-8 py-3.5 bg-red-600 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-red-700 active:scale-[0.98] transition-all shadow-md">
+                    Hapus Akun Saya
+                </button>
             </div>
         </form>
 

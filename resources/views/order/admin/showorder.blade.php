@@ -120,6 +120,13 @@
                                         </button>
                                     @endif
                                 </form>
+
+                                <form action="{{ route('admin.orders.cancel', $order->id) }}" method="POST" class="w-full sm:w-auto" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                                    @csrf
+                                    <button type="submit" class="w-full px-5 py-2 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-red-700 transition-all shadow-sm flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-sm">cancel</span> Batalkan
+                                    </button>
+                                </form>
                             @endif
 
                             @if($order->status == 'completed' && $order->rating)
@@ -129,7 +136,12 @@
                                     <span class="material-symbols-outlined text-sm text-amber-500 fill-amber-500" style="font-variation-settings: 'FILL' 1;">star</span> Lihat Rating
                                 </button>
                             @endif
-                        </div>
+
+                            <a href="{{ route('admin.orders.detail', $order->id) }}" class="w-full sm:w-auto block text-center">
+                                <button type="button" class="w-full px-5 py-2 bg-white border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-gray-100 transition-all shadow-sm">
+                                    Detail Pesanan
+                                </button>
+                            </a>
                     </div>
 
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminActivityLog;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -114,6 +115,8 @@ class BookController extends Controller
         $books = Book::with('seller')->orderByDesc('id')->paginate(12);
         $categories = Category::all();
 
+        AdminActivityLog::log('view', 'catalog', 'Admin melihat katalog buku');
+
         return view('dashboard.admin.catalog', compact('books', 'categories'));
     }
 
@@ -148,12 +151,16 @@ class BookController extends Controller
 
         $categories = Category::all();
 
+        AdminActivityLog::log('search', 'catalog', 'Admin mencari buku: ' . $request->get('search-inventory'));
+
         return view('dashboard.admin.catalog', compact('books', 'categories'));
     }
 
     public function showAdminBookById($id)
     {
         $book = Book::with('seller')->findOrFail($id);
+
+        AdminActivityLog::log('view', 'catalog', 'Admin melihat detail buku: ' . $book->title);
 
         return view('dashboard.admin.detailcatalog', compact('book'));
     }
@@ -202,6 +209,11 @@ class BookController extends Controller
         ]);
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+
+        if (Auth::user()->role === 'admin') {
+            AdminActivityLog::log('create', 'catalog', 'Admin menambahkan buku: ' . $validated['title']);
+        }
+
         return redirect()->route($redirectRoute)->with('success', 'Buku berhasil ditambahkan!');
     }
 
@@ -211,6 +223,10 @@ class BookController extends Controller
 
         if (Auth::user()->role !== 'admin' && $book->seller_id !== Auth::id()) {
             abort(403);
+        }
+
+        if (Auth::user()->role === 'admin') {
+            AdminActivityLog::log('edit', 'catalog', 'Admin mengedit buku: ' . $book->title);
         }
 
         return view('books.updatebook', compact('book'));
@@ -241,6 +257,10 @@ class BookController extends Controller
         $book->update($request->all());
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+
+        if (Auth::user()->role === 'admin') {
+            AdminActivityLog::log('update', 'catalog', 'Admin memperbarui buku: ' . $book->title);
+        }
         return redirect()->route($redirectRoute)->with('success', 'Informasi buku berhasil diperbarui!');
     }
 
@@ -253,9 +273,15 @@ class BookController extends Controller
             abort(403);
         }
 
+        $bookTitle = $book->title;
         $book->delete();
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
+
+        if (Auth::user()->role === 'admin') {
+            AdminActivityLog::log('delete', 'catalog', 'Admin menghapus buku: ' . $bookTitle);
+        }
+
         return redirect()->route($redirectRoute)->with('success', 'Buku berhasil dihapus dari katalog!');
     }
 }

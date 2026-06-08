@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Book;
 use App\Models\Order;
+use App\Models\AdminActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -36,23 +37,34 @@ class AdminDashboardController extends Controller
         // Mengambil daftar buku yang stoknya menipis/kritis secara global untuk komponen kontrol stok
         $lowStockBooks = Book::where('stock', '<=', 10)->orderBy('stock', 'asc')->get();
 
-        // DATA DINAMIS BAR CHART MANUAL (Performa Mingguan Global 7 Hari Terakhir)
+        // DATA DINAMIS BAR CHART (Performa Mingguan 7 Hari Terakhir)
         $weeklyBars = [];
+        $rawWeeklyData = Order::where('status', 'completed')
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw("DATE(created_at) as date, SUM(total) as revenue, COUNT(*) as order_count")
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get()
+            ->keyBy('date');
+
+        $maxRevenue = max($rawWeeklyData->max('revenue') ?: 0, 1);
+        $maxOrders = max($rawWeeklyData->max('order_count') ?: 0, 1);
+
         for ($i = 6; $i >= 0; $i--) {
-            $date = date('Y-m-d', strtotime("-$i days"));
-            $dayName = date('D', strtotime($date));
+            $date = now()->subDays($i)->format('Y-m-d');
+            $dayName = now()->subDays($i)->format('D');
+            $dayData = $rawWeeklyData->get($date);
+            $dayRevenue = (int) ($dayData->revenue ?? 0);
+            $dayOrders = (int) ($dayData->order_count ?? 0);
 
-            // Hitung pendapatan hari tersebut
-            $dayRevenue = Order::where('status', 'completed')->whereDate('created_at', $date)->sum('total');
-            // Simulasi skala tinggi batang (Max Rp 5.000.000 dianggap 100%)
-            $earningHeight = min(($dayRevenue / 5000000) * 100, 100);
-
-            // Tinggi bar pengunjung diset konstan atau acak sebagai pelengkap estetika dashboard murni tanpa Chart.js
             $weeklyBars[$dayName] = [
-                'visitor_height' => rand(30, 85),
-                'earning_height' => $dayRevenue > 0 ? max($earningHeight, 15) : 0
+                'order_count' => $dayOrders,
+                'revenue' => $dayRevenue,
+                'earning_height' => $dayRevenue > 0 ? max(($dayRevenue / $maxRevenue) * 100, 10) : 0,
+                'order_height' => $dayOrders > 0 ? max(($dayOrders / $maxOrders) * 100, 10) : 0,
             ];
         }
+
+        AdminActivityLog::log('view', 'dashboard', 'Admin melihat dashboard');
 
         return view('dashboard.admin.dashboard', compact(
             'adminInfo',
@@ -66,6 +78,47 @@ class AdminDashboardController extends Controller
             'lowStockBooks',
             'weeklyBars'
         ));
+    }
+
+    public function activityLogs(Request $request)
+    {
+        $query = AdminActivityLog::with('user');
+
+        if ($search = $request->get('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('module', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($action = $request->get('action')) {
+            $query->where('action', $action);
+        }
+
+        if ($module = $request->get('module')) {
+            $query->where('module', $module);
+        }
+
+        if ($date_from = $request->get('date_from')) {
+            $query->whereDate('created_at', '>=', $date_from);
+        }
+
+        if ($date_to = $request->get('date_to')) {
+            $query->whereDate('created_at', '<=', $date_to);
+        }
+
+        $logs = $query->latest()->paginate(20)->withQueryString();
+
+        $actions = AdminActivityLog::select('action')->distinct()->pluck('action');
+        $modules = AdminActivityLog::select('module')->distinct()->pluck('module');
+
+        AdminActivityLog::log('view', 'activity-logs', 'Admin melihat log aktivitas');
+
+        return view('dashboard.admin.activity-logs', compact('logs', 'actions', 'modules'));
     }
 
     private function getSystemUptime()

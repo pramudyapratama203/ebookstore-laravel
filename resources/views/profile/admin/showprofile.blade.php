@@ -1,6 +1,6 @@
-@extends('layouts.seller')
+@extends('layouts.admin')
 
-@section('title', 'Profil Seller')
+@section('title', 'Profil Admin')
 
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -28,6 +28,7 @@
             </div>
         </section>
 
+        
         @if(session('success'))
             <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm">
                 <span class="material-symbols-outlined text-green-600">check_circle</span>
@@ -42,7 +43,7 @@
             </div>
         @endif
 
-        <form action="{{ route('profile.seller.update') }}" method="POST" class="bg-white p-6 sm:p-10 rounded-2xl border border-[#e8dfd1] shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-6">
+        <form action="{{ route('profile.admin.update') }}" method="POST" class="bg-white p-6 sm:p-10 rounded-2xl border border-[#e8dfd1] shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-6">
             @csrf
             @method('PUT')
             
@@ -86,12 +87,12 @@
             </div>
         </form>
 
-        <form action="{{ route('profile.seller.destroy') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun? Semua data termasuk buku akan hilang dan tidak dapat dikembalikan.')">
+        <form action="{{ route('profile.admin.destroy') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun? Semua data akan hilang dan tidak dapat dikembalikan.')">
             @csrf
             @method('DELETE')
             <div class="bg-white p-6 sm:p-10 rounded-2xl border border-red-200 shadow-[0_4px_20px_-2px_rgba(122,79,55,0.05)] space-y-4">
                 <h3 class="font-['Literata'] text-lg font-bold text-red-700">Hapus Akun</h3>
-                <p class="text-xs text-gray-500">Setelah akun dihapus, semua data terkait (termasuk buku dan pesanan) akan dihapus secara permanen.</p>
+                <p class="text-xs text-gray-500">Setelah akun dihapus, semua data terkait akan dihapus secara permanen.</p>
                 <div class="flex flex-col space-y-1.5">
                     <label class="text-xs font-bold text-gray-400 uppercase tracking-wider" for="delete-password">Masukkan Password untuk Konfirmasi</label>
                     <input class="w-full bg-[#fcf9f0]/40 border border-red-200 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 rounded-xl p-3.5 text-gray-800 text-sm" 

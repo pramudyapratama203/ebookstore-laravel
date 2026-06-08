@@ -150,16 +150,20 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#5f3822]"></span> Pendapatan
                             </span>
                             <span class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#f4dfcb]"></span> Aktivitas
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#f4dfcb]"></span> Pesanan
                             </span>
                         </div>
                     </div>
                     
                     <div class="h-64 flex items-end justify-between gap-2 sm:gap-4 px-2 sm:px-4 pb-2 border-b border-gray-100 overflow-hidden select-none">
                         @foreach($weeklyBars as $dayName => $heights)
-                            <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                            <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group relative">
+                                <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] rounded-lg px-2.5 py-1.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-lg">
+                                    <div class="font-semibold">Rp {{ number_format($heights['revenue'], 0, ',', '.') }}</div>
+                                    <div class="text-gray-300">{{ $heights['order_count'] }} pesanan</div>
+                                </div>
                                 <div class="w-full max-w-[32px] flex items-end gap-1 h-[80%] relative">
-                                    <div class="w-1/2 bg-[#f4dfcb] rounded-t-sm transition-all group-hover:brightness-95 shadow-sm" style="height: {{ $heights['visitor_height'] ?? 10 }}%;"></div>
+                                    <div class="w-1/2 bg-[#f4dfcb] rounded-t-sm transition-all group-hover:brightness-95 shadow-sm" style="height: {{ $heights['order_height'] ?? 10 }}%;"></div>
                                     <div class="w-1/2 bg-[#5f3822] rounded-t-sm transition-all group-hover:brightness-110 shadow-sm" style="height: {{ $heights['earning_height'] ?? 10 }}%;"></div>  
                                 </div>  
                                 <span class="text-[11px] font-bold text-gray-400">{{ $dayName }}</span>

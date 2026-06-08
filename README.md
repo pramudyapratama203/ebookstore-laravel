@@ -1,58 +1,172 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-Bookstore
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi marketplace e-book berbasis web dengan tiga peran pengguna: **Admin**, **Seller**, dan **Buyer**. Dibangun menggunakan Laravel 13 + Tailwind CSS.
 
-## About Laravel
+## Fitur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Autentikasi & Manajemen Pengguna
+- Register, Login, dan Logout
+- Reset password via email
+- Profil pengguna (nama, email, telepon)
+- Tiga role: Admin, Seller, Buyer
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 📚 Katalog Buku (Buyer)
+- Jelajahi seluruh koleksi buku
+- Cari berdasarkan judul/penulis
+- Filter berdasarkan kategori
+- Urutkan berdasarkan harga, rating, atau popularitas
+- Lihat detail buku
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛒 Keranjang Belanja (Buyer)
+- Tambah/hapus buku ke keranjang
+- Checkout pesanan
 
-## Learning Laravel
+### 📦 Manajemen Pesanan
+- **Buyer**: Lihat histori pesanan, beri rating & ulasan
+- **Seller**: Kelola pesanan masuk, perbarui status
+- **Admin**: Pantau seluruh transaksi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 📖 Manajemen Buku (Seller & Admin)
+- Tambah, edit, dan hapus buku
+- Atur stok, harga, kategori, dan deskripsi
+- Admin dapat mengelola seluruh katalog global
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📊 Dashboard
+- **Admin**: Statistik global (total pengguna, buku, pendapatan, rating), pesanan terbaru, stok menipis, grafik mingguan
+- **Seller**: Statistik penjualan pribadi, pendapatan, rating, pesanan
+- **Buyer**: Riwayat pesanan terbaru
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 📋 Log Aktivitas Admin
+- Catat semua aktivitas admin (lihat, cari, tambah, edit, hapus)
+- Informasi: waktu, admin, aksi, modul, deskripsi, IP address
+- Halaman khusus untuk monitoring aktivitas
 
-## Agentic Development
+## Arsitektur
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Models
+
+| Model | Deskripsi |
+|---|---|
+| `User` | Pengguna dengan role admin/seller/buyer |
+| `Book` | Buku dengan relasi ke seller |
+| `Order` | Pesanan dengan relasi ke buyer dan book |
+| `Cart` | Item keranjang belanja |
+| `Category` | Kategori buku |
+| `UserProfile` | Profil tambahan pengguna |
+| `SellerRating` | Rating untuk seller |
+| `AdminActivityLog` | Log aktivitas admin |
+
+### Controllers
+
+| Controller | Fungsi |
+|---|---|
+| `AuthController` | Register, login, logout |
+| `AdminDashboardController` | Dashboard & log aktivitas admin |
+| `DashboardController` | Dashboard buyer & seller |
+| `BookController` | CRUD buku untuk buyer, seller, admin |
+| `OrderController` | Manajemen pesanan semua role |
+| `CartController` | Keranjang belanja |
+| `UsersController` | Profil pengguna |
+| `ForgotPasswordController` | Reset password |
+
+### Routes (Web)
+
+| Metode | URI | Deskripsi |
+|---|---|---|
+| GET/POST | `/login`, `/register` | Autentikasi |
+| GET | `/home/buyer/**` | Halaman buyer |
+| GET | `/home/seller/**` | Halaman seller |
+| GET | `/admin/dashboard` | Dashboard admin |
+| GET | `/admin/catalog` | Katalog global |
+| GET | `/admin/orders` | Semua pesanan |
+| GET | `/admin/activity-logs` | Log aktivitas admin |
+
+## Role Pengguna
+
+| Role | Kemampuan |
+|---|---|
+| **Admin** | Akses penuh ke semua fitur, kelola semua buku & pesanan, lihat log aktivitas |
+| **Seller** | Kelola buku sendiri, kelola pesanan masuk, lihat dashboard penjualan |
+| **Buyer** | Jelajahi & beli buku, kelola keranjang, beri rating & ulasan |
+
+## Teknologi
+
+| Stack | Versi |
+|---|---|
+| PHP | ^8.3 |
+| Laravel | ^13.0 |
+| Tailwind CSS | ^4.0 |
+| Vite | ^8.0 |
+| Alpine.js | ^3.4 |
+| Database | SQLite / MySQL |
+
+## Instalasi
+
+### Prasyarat
+- PHP 8.3+
+- Composer
+- Node.js & npm
+- Database (SQLite default / MySQL)
+
+### Langkah
 
 ```bash
-composer require laravel/boost --dev
+# Clone repository
+git clone <repo-url>
+cd ebookstore-laravel
 
-php artisan boost:install
+# Install dependensi PHP
+composer install
+
+# Copy environment
+cp .env.example .env
+# Windows: copy .env.example .env
+
+# Generate app key
+php artisan key:generate
+
+# Konfigurasi database di file .env
+# SQLite digunakan secara default
+
+# Jalankan migrasi
+php artisan migrate
+
+# Install dependensi frontend
+npm install
+
+# Build asset
+npm run build
+
+# Jalankan aplikasi
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Atau gunakan script bawaan:
 
-## Contributing
+```bash
+composer run setup
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Development
 
-## Code of Conduct
+```bash
+composer run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Menjalankan 4 proses secara bersamaan:
+- `php artisan serve`
+- `php artisan queue:listen`
+- `php artisan pail`
+- `npm run dev`
 
-## Security Vulnerabilities
+## Command
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Command | Deskripsi |
+|---|---|
+| `composer run setup` | Instalasi lengkap pertama kali |
+| `composer run dev` | Menjalankan environment development |
+| `composer run test` | Menjalankan test |
 
-## License
+## Lisensi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT

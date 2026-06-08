@@ -129,7 +129,16 @@
                                 </span>
                             @endif
 
-                            <a href="#" class="w-full sm:w-auto block text-center">
+                            @if($order->status == 'pending' || $order->status == 'processing')
+                                <form action="{{ route('buyer.orders.cancel', $order->id) }}" method="POST" class="w-full sm:w-auto" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                                    @csrf
+                                    <button type="submit" class="w-full px-5 py-2 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-red-700 transition-all shadow-sm flex items-center justify-center gap-1.5">
+                                        <span class="material-symbols-outlined text-sm">cancel</span> Batalkan
+                                    </button>
+                                </form>
+                            @endif
+
+                            <a href="{{ route('order.buyer.detail', $order->id) }}" class="w-full sm:w-auto block text-center">
                                 <button type="button" class="w-full px-5 py-2 bg-white border border-gray-300 text-gray-700 text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-gray-100 transition-all shadow-sm">
                                     Detail Pesanan
                                 </button>
