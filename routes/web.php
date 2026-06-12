@@ -7,6 +7,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\SellerExportController;
+
+// Root route - redirect to login
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Buyer Book
 Route::get('/home/buyer', [BookController::class, 'showBookToBuyer'])->name('home.buyer');
@@ -78,5 +84,10 @@ Route::get('/admin/profile', [UsersController::class, 'showAdminProfile'])->name
 Route::put('/admin/profile', [UsersController::class, 'updateProfile'])->name('profile.admin.update');
 Route::delete('/admin/profile', [UsersController::class, 'destroyAccount'])->name('profile.admin.destroy');
 
+// Seller Export
+Route::get('/home/seller/export/sales-excel', [SellerExportController::class, 'exportSalesExcel'])->name('seller.export.sales.excel');
+Route::get('/home/seller/export/revenue-excel', [SellerExportController::class, 'exportRevenueExcel'])->name('seller.export.revenue.excel');
+Route::get('/home/seller/export/sales-pdf', [SellerExportController::class, 'exportSalesPdf'])->name('seller.export.sales.pdf');
+Route::get('/home/seller/export/revenue-pdf', [SellerExportController::class, 'exportRevenuePdf'])->name('seller.export.revenue.pdf');
 
 require __DIR__.'/auth.php';

@@ -81,6 +81,22 @@
             </div>
         </div>
 
+        <div class="flex flex-wrap gap-3 mb-8">
+            <div class="text-sm font-semibold text-gray-500 self-center mr-2">Export:</div>
+            <a href="{{ route('seller.export.sales.excel') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#5f3822] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#7a4f37] active:scale-[0.98] transition-all duration-200 shadow-sm">
+                <span class="material-symbols-outlined text-sm">table</span> Excel Penjualan
+            </a>
+            <a href="{{ route('seller.export.revenue.excel') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#5f3822] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#7a4f37] active:scale-[0.98] transition-all duration-200 shadow-sm">
+                <span class="material-symbols-outlined text-sm">payments</span> Excel Pendapatan
+            </a>
+            <a href="{{ route('seller.export.sales.pdf') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#5f3822] text-[#5f3822] text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#5f3822] hover:text-white active:scale-[0.98] transition-all duration-200 shadow-sm">
+                <span class="material-symbols-outlined text-sm">picture_as_pdf</span> PDF Penjualan
+            </a>
+            <a href="{{ route('seller.export.revenue.pdf') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#5f3822] text-[#5f3822] text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#5f3822] hover:text-white active:scale-[0.98] transition-all duration-200 shadow-sm">
+                <span class="material-symbols-outlined text-sm">description</span> PDF Pendapatan
+            </a>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
             <div class="lg:col-span-2 space-y-8">
