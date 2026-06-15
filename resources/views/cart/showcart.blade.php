@@ -58,6 +58,11 @@
                                 <div class="text-[#c8a96e] font-extrabold text-sm mt-2">
                                     Rp {{ number_format($cart->book->price, 0, ',', '.') }}
                                 </div>
+                                @if($cart->book->stock > 0)
+                                    <div class="text-[10px] font-bold text-green-600 mt-1">Stok: {{ $cart->book->stock }}</div>
+                                @else
+                                    <div class="text-[10px] font-bold text-red-600 mt-1">Stok habis</div>
+                                @endif
                             </div>
                             
                             <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-xl">
@@ -175,14 +180,17 @@
         const quantityValue = item.querySelector('.quantity-value');
         const inputQuantity = item.querySelector('.input-quantity');
         const cartId = item.getAttribute('data-id');
+        const stockText = item.querySelector('.text-green-600');
+        const maxStock = stockText ? parseInt(stockText.textContent.replace(/\D/g, '')) : 999;
 
         btnIncrease.addEventListener('click', () => {
             let currentQty = parseInt(quantityValue.textContent);
-            currentQty++;
-            
-            quantityValue.textContent = currentQty; 
-            inputQuantity.value = currentQty;      
-            calculateTotalPayment();              
+            if (currentQty < maxStock) {
+                currentQty++;
+                quantityValue.textContent = currentQty; 
+                inputQuantity.value = currentQty;      
+                calculateTotalPayment();
+            }
         });
 
         btnDecrease.addEventListener('click', () => {

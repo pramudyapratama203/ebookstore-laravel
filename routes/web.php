@@ -9,9 +9,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\SellerExportController;
 
-// Root route - redirect to login
+// Root route - landing page
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('landing');
 });
 
 // Buyer Book
@@ -40,7 +40,6 @@ Route::get('/admin/category/edit/{id}', [BookController::class, 'editCategory'])
 Route::put('/admin/category/update/{id}', [BookController::class, 'updateCategory'])->name('admin.category.update');
 Route::delete('/admin/book/delete/{id}', [BookController::class, 'destroy'])->name('admin.book.delete');
 Route::get('/admin/catalog/detail/{id}', [BookController::class, 'showAdminBookById'])->name('admin.catalog.detail');
-Route::get('/admin/orders', [OrderController::class, 'adminOrders'])->name('admin.orders');
 Route::get('/admin/activity-logs', [AdminDashboardController::class, 'activityLogs'])->name('admin.activity-logs');
 
 // Cart
@@ -65,12 +64,9 @@ Route::get('/home/buyer/order/download/{id}', [BookController::class, 'download'
 // Order Detail
 Route::get('/home/buyer/order/detail/{id}', [OrderController::class, 'buyerOrderDetail'])->name('order.buyer.detail');
 Route::get('/home/seller/order/detail/{id}', [OrderController::class, 'sellerOrderDetail'])->name('order.seller.detail');
-Route::get('/admin/orders/detail/{id}', [OrderController::class, 'adminOrderDetail'])->name('admin.orders.detail');
-
 // Cancel Order
 Route::post('/home/buyer/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('buyer.orders.cancel');
 Route::post('/home/seller/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('seller.orders.cancel');
-Route::post('/admin/orders/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('admin.orders.cancel');
 
 // Profile
 Route::get('/home/buyer/profile', [UsersController::class, 'showUserProfile'])->name('profile.buyer.show');
@@ -89,5 +85,8 @@ Route::get('/home/seller/export/sales-excel', [SellerExportController::class, 'e
 Route::get('/home/seller/export/revenue-excel', [SellerExportController::class, 'exportRevenueExcel'])->name('seller.export.revenue.excel');
 Route::get('/home/seller/export/sales-pdf', [SellerExportController::class, 'exportSalesPdf'])->name('seller.export.sales.pdf');
 Route::get('/home/seller/export/revenue-pdf', [SellerExportController::class, 'exportRevenuePdf'])->name('seller.export.revenue.pdf');
+
+// Seller Export Preview
+Route::get('/home/seller/export/preview/sales', [SellerExportController::class, 'previewSales'])->name('seller.export.preview.sales');
 
 require __DIR__.'/auth.php';

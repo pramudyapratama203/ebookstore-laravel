@@ -162,6 +162,10 @@
             @endforelse
         </div>
 
+        <div class="mt-8 flex justify-center sm:justify-end">
+            {{ $orders->links() }}
+        </div>
+
         <div id="empty-order-alert" class="hidden bg-white py-20 text-center rounded-2xl border border-[#e8dfd1] shadow-sm px-4">
             <span class="material-symbols-outlined text-5xl text-gray-300 mb-3 block">filter_list_off</span>
             <p class="font-['Source_Serif_4'] text-gray-500 text-sm">Tidak ditemukan data orderan yang cocok.</p>

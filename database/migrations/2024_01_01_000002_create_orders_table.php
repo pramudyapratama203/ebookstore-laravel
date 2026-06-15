@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('rating')->nullable();
             $table->text('review')->nullable();
             $table->timestamps();
-            
+            $table->text('description')->nullable();
             $table->index('buyer_id');
             $table->index('book_id');
             $table->index('status');

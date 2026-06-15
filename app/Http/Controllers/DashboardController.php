@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminActivityLog;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Order;
@@ -16,6 +17,8 @@ class DashboardController extends Controller
             ->orderByDesc('id')
             ->take(5)
             ->get();
+
+        AdminActivityLog::log('view', 'dashboard', 'Buyer melihat dashboard');
 
         return view('dashboard.buyer', compact('orders'));
     }
@@ -89,6 +92,8 @@ class DashboardController extends Controller
                 'visitor_height' => ($chartData[$day]['visitor'] / $maxVisitor) * 100,
             ];
         }        
+        AdminActivityLog::log('view', 'dashboard', 'Seller melihat dashboard');
+
         return view('dashboard.seller.home', compact('user', 'books', 'categories', 'totalEarnings', 'earningsChange', 'averageRating', 'orders', 'weeklyBars'));
     }
 

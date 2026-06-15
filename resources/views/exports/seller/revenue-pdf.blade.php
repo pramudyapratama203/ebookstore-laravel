@@ -31,7 +31,7 @@
         <table>
             <tr><td class="label">Total Pendapatan</td><td>Rp {{ number_format($totalRevenue, 0, ',', '.') }}</td></tr>
             <tr><td class="label">Total Buku Terjual</td><td>{{ $totalSold }} Eksemplar</td></tr>
-            <tr><td class="label">Total Judul Buku</td><td>{{ $books->count() }} Judul</td></tr>
+            <tr><td class="label">Total Judul Buku</td><td>{{ $grouped->count() }} Judul</td></tr>
         </table>
     </div>
 
@@ -47,14 +47,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($books as $book)
+            @foreach($grouped as $item)
             <tr>
-                <td>{{ $book->title }}</td>
-                <td class="text-right">Rp {{ number_format($book->price, 0, ',', '.') }}</td>
-                <td class="text-center">{{ $book->sold }}</td>
-                <td class="text-right">Rp {{ number_format($book->sold * $book->price, 0, ',', '.') }}</td>
-                <td class="text-center">{{ $book->stock }}</td>
-                <td class="text-center">{{ $book->rating }}</td>
+                <td>{{ $item['book']->title }}</td>
+                <td class="text-right">Rp {{ number_format($item['book']->price, 0, ',', '.') }}</td>
+                <td class="text-center">{{ $item['total_qty'] }}</td>
+                <td class="text-right">Rp {{ number_format($item['total_amount'], 0, ',', '.') }}</td>
+                <td class="text-center">{{ $item['book']->stock }}</td>
+                <td class="text-center">{{ $item['book']->rating }}</td>
             </tr>
             @endforeach
         </tbody>

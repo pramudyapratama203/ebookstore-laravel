@@ -118,9 +118,16 @@
                                 </p>
 
                                 <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-gray-50">
-                                    <span class="font-black text-[#5f3822] text-sm sm:text-base">
-                                        Rp {{ number_format($book->price, 0, ',', '.') }}
-                                    </span>
+                                    <div>
+                                        <span class="font-black text-[#5f3822] text-sm sm:text-base">
+                                            Rp {{ number_format($book->price, 0, ',', '.') }}
+                                        </span>
+                                        @if($book->stock > 0)
+                                            <div class="text-[10px] font-bold text-green-600 mt-0.5">Stok {{ $book->stock }}</div>
+                                        @else
+                                            <div class="text-[10px] font-bold text-red-600 mt-0.5">Habis</div>
+                                        @endif
+                                    </div>
 
                                     <a href="{{ route('buyer.detail', $book->id) }}" class="block w-full sm:w-auto">
                                         <button type="button" class="w-full text-center bg-[#5f3822] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#7a4f37] transition-all shadow-sm tracking-wide">

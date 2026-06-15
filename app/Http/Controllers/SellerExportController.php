@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminActivityLog;
 use App\Models\Book;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -16,7 +17,7 @@ class SellerExportController extends Controller
         $user = Auth::user();
         $orders = Order::whereHas('book', function ($q) use ($user) {
             $q->where('seller_id', $user->id);
-        })->with(['buyer', 'book'])->orderByDesc('id')->get();
+        })->where('status', 'completed')->with(['buyer', 'book'])->orderByDesc('id')->get();
 
         $writer = new Writer();
         $filename = 'penjualan-' . now()->format('Y-m-d') . '.xlsx';
@@ -39,13 +40,26 @@ class SellerExportController extends Controller
             ]));
         }
 
+        AdminActivityLog::log('export', 'orders', 'Seller mengekspor penjualan (Excel)');
+
         $writer->close();
     }
 
     public function exportRevenueExcel()
     {
         $user = Auth::user();
-        $books = Book::where('seller_id', $user->id)->get();
+        $orders = Order::whereHas('book', function ($q) use ($user) {
+            $q->where('seller_id', $user->id);
+        })->where('status', 'completed')->with('book')->get();
+
+        $grouped = $orders->groupBy('book_id')->map(function ($items) {
+            return [
+                'book' => $items->first()->book,
+                'total_qty' => $items->sum('quantity'),
+                'total_amount' => $items->sum('total'),
+                'order_count' => $items->count(),
+            ];
+        });
 
         $writer = new Writer();
         $filename = 'pendapatan-' . now()->format('Y-m-d') . '.xlsx';
@@ -56,13 +70,14 @@ class SellerExportController extends Controller
         $writer->addRow(Row::fromValues($header));
 
         $grandTotal = 0;
-        foreach ($books as $book) {
-            $revenue = $book->sold * $book->price;
+        foreach ($grouped as $item) {
+            $book = $item['book'];
+            $revenue = $item['total_amount'];
             $grandTotal += $revenue;
             $writer->addRow(Row::fromValues([
                 $book->title,
                 $book->price,
-                $book->sold,
+                $item['total_qty'],
                 $revenue,
                 $book->stock,
                 $book->rating,
@@ -72,6 +87,8 @@ class SellerExportController extends Controller
         $writer->addRow(Row::fromValues([]));
         $writer->addRow(Row::fromValues(['Total Keseluruhan', '', '', $grandTotal, '', '']));
 
+        AdminActivityLog::log('export', 'orders', 'Seller mengekspor pendapatan (Excel)');
+
         $writer->close();
     }
 
@@ -80,9 +97,11 @@ class SellerExportController extends Controller
         $user = Auth::user();
         $orders = Order::whereHas('book', function ($q) use ($user) {
             $q->where('seller_id', $user->id);
-        })->with(['buyer', 'book'])->orderByDesc('id')->get();
+        })->where('status', 'completed')->with(['buyer', 'book'])->orderByDesc('id')->get();
 
         $totalEarnings = $orders->sum('total');
+
+        AdminActivityLog::log('export', 'orders', 'Seller mengekspor penjualan (PDF)');
 
         $pdf = Pdf::loadView('exports.seller.sales-pdf', compact('orders', 'totalEarnings', 'user'));
         return $pdf->download('penjualan-' . now()->format('Y-m-d') . '.pdf');
@@ -91,12 +110,49 @@ class SellerExportController extends Controller
     public function exportRevenuePdf()
     {
         $user = Auth::user();
-        $books = Book::where('seller_id', $user->id)->get();
+        $orders = Order::whereHas('book', function ($q) use ($user) {
+            $q->where('seller_id', $user->id);
+        })->where('status', 'completed')->with('book')->get();
 
-        $totalRevenue = $books->sum(fn($b) => $b->sold * $b->price);
-        $totalSold = $books->sum('sold');
+        $grouped = $orders->groupBy('book_id')->map(function ($items) {
+            return [
+                'book' => $items->first()->book,
+                'total_qty' => $items->sum('quantity'),
+                'total_amount' => $items->sum('total'),
+            ];
+        });
 
-        $pdf = Pdf::loadView('exports.seller.revenue-pdf', compact('books', 'totalRevenue', 'totalSold', 'user'));
+        $totalRevenue = $grouped->sum('total_amount');
+        $totalSold = $grouped->sum('total_qty');
+
+        AdminActivityLog::log('export', 'orders', 'Seller mengekspor pendapatan (PDF)');
+
+        $pdf = Pdf::loadView('exports.seller.revenue-pdf', compact('grouped', 'totalRevenue', 'totalSold', 'user'));
         return $pdf->download('pendapatan-' . now()->format('Y-m-d') . '.pdf');
     }
+
+    public function previewSales()
+    {
+        $user = Auth::user();
+        $orders = Order::whereHas('book', function ($q) use ($user) {
+            $q->where('seller_id', $user->id);
+        })->where('status', 'completed')->with(['buyer', 'book'])->orderByDesc('id')->get();
+
+        $grouped = $orders->groupBy('book_id')->map(function ($items) {
+            return [
+                'book' => $items->first()->book,
+                'total_qty' => $items->sum('quantity'),
+                'total_amount' => $items->sum('total'),
+                'order_count' => $items->count(),
+            ];
+        });
+
+        $totalEarnings = $orders->sum('total');
+
+        AdminActivityLog::log('view', 'orders', 'Seller melihat preview penjualan');
+
+        return view('exports.seller.preview-sales', compact('grouped', 'totalEarnings', 'user'));
+    }
+
+
 }

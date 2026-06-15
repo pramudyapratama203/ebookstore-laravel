@@ -36,16 +36,20 @@ class BookController extends Controller
             default => $query->orderBy('id'),
         };
 
-        $books = $query->with('seller')->paginate(12);
+        $books = $query->with('seller')->paginate(4);
         $categories = Category::all();
+
+        AdminActivityLog::log('search', 'catalog', 'Buyer mencari buku: ' . $request->get('q'));
 
         return view('dashboard.buyer.search', compact('books', 'categories'));
     }
 
     public function showBookToBuyer()
     {
-        $books = Book::all();
+        $books = Book::paginate(4);
         $categories = Category::all();
+        
+        AdminActivityLog::log('view', 'catalog', 'Buyer melihat katalog buku');
         
         return view('dashboard.buyer.home', compact('books', 'categories'));
     }
@@ -53,8 +57,10 @@ class BookController extends Controller
     public function showBookToSeller()
     {
         $user = Auth::user();
-        $books = Book::where('seller_id', $user->id)->orderByDesc('id')->paginate(12);
+        $books = Book::where('seller_id', $user->id)->orderByDesc('id')->paginate(4);
         $categories = Category::all();
+
+        AdminActivityLog::log('view', 'catalog', 'Seller melihat katalog buku');
 
         return view('dashboard.seller.catalog', compact('books', 'categories'));
     }
@@ -88,7 +94,7 @@ class BookController extends Controller
             }
         }
 
-        $books = $query->with('seller')->orderByDesc('id')->paginate(12)->withQueryString();
+        $books = $query->with('seller')->orderByDesc('id')->paginate(4)->withQueryString();
 
         $categories = Book::where('seller_id', $user->id)
                         ->whereNotNull('category')
@@ -96,11 +102,15 @@ class BookController extends Controller
                         ->distinct()
                         ->pluck('category'); 
 
+        AdminActivityLog::log('search', 'catalog', 'Seller mencari buku: ' . $request->get('search-inventory'));
+
         return view('dashboard.seller.catalog', compact('books', 'categories'));
     }
     public function showBookById($id)
     {
         $book = Book::with('seller')->findOrFail($id);
+
+        AdminActivityLog::log('view', 'catalog', 'Buyer melihat detail buku: ' . $book->title);
 
         return view('dashboard.buyer.detail', compact('book'));
     }
@@ -109,12 +119,14 @@ class BookController extends Controller
     {
         $book = Book::where('id', $id)->where('seller_id', Auth::id())->firstOrFail();
 
+        AdminActivityLog::log('view', 'catalog', 'Seller melihat detail buku: ' . $book->title);
+
         return view('dashboard.seller.detailcatalog', compact('book'));
     }
 
     public function showAdminCatalog()
     {
-        $books = Book::with('seller')->orderByDesc('id')->paginate(12);
+        $books = Book::with('seller')->orderByDesc('id')->paginate(4);
         $categories = Category::all();
 
         AdminActivityLog::log('view', 'catalog', 'Admin melihat katalog buku');
@@ -149,7 +161,7 @@ class BookController extends Controller
             }
         }
 
-        $books = $query->with('seller')->orderByDesc('id')->paginate(12)->withQueryString();
+        $books = $query->with('seller')->orderByDesc('id')->paginate(4)->withQueryString();
 
         $categories = Category::all();
 
@@ -184,6 +196,7 @@ class BookController extends Controller
             'publisher'   => 'nullable|string|max:255',
             'language'    => 'required|string|max:255',
             'description' => 'nullable|string',
+            'pages'       => 'required|integer|min:1',
             'file'        => 'nullable|file|mimes:pdf,epub,mobi|max:102400',
         ]);
 
@@ -214,14 +227,13 @@ class BookController extends Controller
             'rating'      => 0,
             'sold'        => 0,
             'is_new'      => true,
-            'pages'       => 0,
+            'pages'       => $validated['pages'],
         ]);
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
 
-        if (Auth::user()->role === 'admin') {
-            AdminActivityLog::log('create', 'catalog', 'Admin menambahkan buku: ' . $validated['title']);
-        }
+        $role = ucfirst(Auth::user()->role);
+        AdminActivityLog::log('create', 'catalog', $role . ' menambahkan buku: ' . $validated['title']);
 
         return redirect()->route($redirectRoute)->with('success', 'Buku berhasil ditambahkan!');
     }
@@ -234,9 +246,8 @@ class BookController extends Controller
             abort(403);
         }
 
-        if (Auth::user()->role === 'admin') {
-            AdminActivityLog::log('edit', 'catalog', 'Admin mengedit buku: ' . $book->title);
-        }
+        $role = ucfirst(Auth::user()->role);
+        AdminActivityLog::log('edit', 'catalog', $role . ' mengedit buku: ' . $book->title);
 
         return view('books.updatebook', compact('book'));
     }
@@ -249,7 +260,7 @@ class BookController extends Controller
             abort(403);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'author'      => 'required|string|max:255',
             'category'    => 'required|string|max:50',
@@ -264,7 +275,23 @@ class BookController extends Controller
             'file'        => 'nullable|file|mimes:pdf,epub,mobi|max:102400',
         ]);
 
-        $data = $request->except('file');
+        $finalColor = $request->filled('cover_color_custom')
+                    ? $request->input('cover_color_custom')
+                    : $validated['cover_color'];
+
+        $data = [
+            'title'       => $validated['title'],
+            'author'      => $validated['author'],
+            'category'    => $validated['category'],
+            'publisher'   => $validated['publisher'],
+            'year'        => $validated['year'],
+            'language'    => $validated['language'],
+            'description' => $validated['description'],
+            'price'       => $validated['price'],
+            'stock'       => $validated['stock'],
+            'cover_color' => $finalColor,
+            'pages'       => $validated['pages'],
+        ];
 
         if ($request->hasFile('file')) {
             if ($book->file_path) {
@@ -273,14 +300,21 @@ class BookController extends Controller
             $data['file_path'] = $request->file('file')->store('books', 'public');
         }
 
-        $book->update($data);
+        \Log::info('UPDATE BOOK ID=' . $id . ' DATA: ', $data);
+
+        $data['updated_at'] = now();
+        \DB::table('books')->where('id', $id)->update($data);
+
+        $book->refresh();
+
+        \Log::info('DB UPDATE DONE: title_after_refresh="' . $book->title . '"');
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
 
-        if (Auth::user()->role === 'admin') {
-            AdminActivityLog::log('update', 'catalog', 'Admin memperbarui buku: ' . $book->title);
-        }
-        return redirect()->route($redirectRoute)->with('success', 'Informasi buku berhasil diperbarui!');
+        $role = ucfirst(Auth::user()->role);
+        AdminActivityLog::log('update', 'catalog', $role . ' memperbarui buku: ' . $book->title);
+
+        return redirect()->route($redirectRoute)->with('success', 'Informasi buku berhasil diperbarui! (id: ' . $id . ', judul: ' . $book->title . ')');
     }
 
     public function download($id)
@@ -296,6 +330,8 @@ class BookController extends Controller
         if (!$book->file_path || !Storage::disk('public')->exists($book->file_path)) {
             return redirect()->back()->with('error', 'File buku tidak tersedia.');
         }
+
+        AdminActivityLog::log('download', 'catalog', 'Buyer mendownload buku: ' . $book->title);
 
         $extension = pathinfo($book->file_path, PATHINFO_EXTENSION);
         $filename = Str::slug($book->title) . '.' . ($extension ?: 'pdf');
@@ -321,9 +357,8 @@ class BookController extends Controller
 
         $redirectRoute = Auth::user()->role === 'admin' ? 'admin.catalog' : 'seller.catalog';
 
-        if (Auth::user()->role === 'admin') {
-            AdminActivityLog::log('delete', 'catalog', 'Admin menghapus buku: ' . $bookTitle);
-        }
+        $role = ucfirst(Auth::user()->role);
+        AdminActivityLog::log('delete', 'catalog', $role . ' menghapus buku: ' . $bookTitle);
 
         return redirect()->route($redirectRoute)->with('success', 'Buku berhasil dihapus dari katalog!');
     }

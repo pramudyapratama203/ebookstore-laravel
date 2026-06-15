@@ -82,8 +82,13 @@ class DatabaseSeeder extends Seeder
 
         // Orders
         Order::create(['buyer_id' => $buyer->id, 'book_id' => 1, 'quantity' => 1, 'total' => 75000, 'status' => 'completed', 'date' => '2024-01-15']);
+        Order::create(['buyer_id' => $buyer->id, 'book_id' => 1, 'quantity' => 3, 'total' => 225000, 'status' => 'completed', 'date' => '2024-01-16']);
+        Order::create(['buyer_id' => $buyer->id, 'book_id' => 1, 'quantity' => 2, 'total' => 150000, 'status' => 'completed', 'date' => '2024-01-17']);
         Order::create(['buyer_id' => $buyer->id, 'book_id' => 2, 'quantity' => 1, 'total' => 129000, 'status' => 'completed', 'date' => '2024-01-20']);
+        Order::create(['buyer_id' => $buyer->id, 'book_id' => 2, 'quantity' => 2, 'total' => 258000, 'status' => 'completed', 'date' => '2024-01-21']);
         Order::create(['buyer_id' => $buyer->id, 'book_id' => 5, 'quantity' => 1, 'total' => 119000, 'status' => 'processing', 'date' => '2024-02-01']);
         Order::create(['buyer_id' => $buyer->id, 'book_id' => 10, 'quantity' => 1, 'total' => 85000, 'status' => 'completed', 'date' => '2024-02-10']);
+        Order::create(['buyer_id' => $buyer->id, 'book_id' => 10, 'quantity' => 1, 'total' => 85000, 'status' => 'pending', 'date' => '2024-02-11']);
+        Order::create(['buyer_id' => $buyer->id, 'book_id' => 3, 'quantity' => 1, 'total' => 159000, 'status' => 'cancelled', 'date' => '2024-02-15']);
     }
 }

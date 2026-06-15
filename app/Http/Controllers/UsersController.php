@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,9 @@ class UsersController extends Controller
             ['user_id' => $user->id],
             $request->only('phone')
         );
+
+        $role = ucfirst($user->role);
+        AdminActivityLog::log('update', 'profile', $role . ' memperbarui profil');
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }

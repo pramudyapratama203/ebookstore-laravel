@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Log Aktivitas Admin')
+@section('title', 'Log Aktivitas')
 
 @section('content')
 <main class="w-full pt-24 px-4 sm:px-6 lg:px-8 pb-12 min-h-screen bg-[#fcf9f0] transition-all duration-300">
@@ -9,10 +9,10 @@
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
             <div class="text-center sm:text-left">
                 <h2 class="font-['Literata'] text-2xl sm:text-3xl lg:text-4xl font-bold text-[#5f3822]">
-                    Log Aktivitas Admin
+                    Log Aktivitas
                 </h2>
                 <p class="text-xs sm:text-sm text-gray-500 mt-1 font-['Source_Serif_4'] italic">
-                    Riwayat aktivitas yang dilakukan oleh admin.
+                    Riwayat aktivitas seluruh pengguna (Buyer, Seller, Admin).
                 </p>
             </div>
         </div>
@@ -72,7 +72,7 @@
                     <thead>
                         <tr class="border-b border-[#e8dfd1] text-[11px] font-bold text-gray-400 uppercase tracking-wider">
                             <th class="py-3 px-4">Waktu</th>
-                            <th class="py-3 px-4">Admin</th>
+                            <th class="py-3 px-4">Pengguna</th>
                             <th class="py-3 px-4">Aksi</th>
                             <th class="py-3 px-4">Modul</th>
                             <th class="py-3 px-4">Deskripsi</th>

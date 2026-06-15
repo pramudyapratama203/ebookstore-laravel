@@ -14,7 +14,7 @@ class OrderController extends Controller
         $orders = Order::where('buyer_id', Auth::id())
             ->with('book.seller')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(4);
             
         return view('order.buyer.showorder', compact('orders'));
     }
@@ -23,7 +23,9 @@ class OrderController extends Controller
         $orders = Order::where('buyer_id', Auth::id())
             ->with('book.seller')
             ->orderByDesc('id')
-            ->paginate(10);
+            ->paginate(4);
+
+        AdminActivityLog::log('view', 'orders', 'Buyer melihat daftar pesanan');
 
         return view('order.buyer.showorder', compact('orders'));
     }
@@ -35,7 +37,9 @@ class OrderController extends Controller
         $orders = Order::whereIn('book_id', $sellerBooks)
             ->with('book', 'buyer')
             ->orderByDesc('id')
-            ->paginate(10);
+            ->paginate(4);
+
+        AdminActivityLog::log('view', 'orders', 'Seller melihat daftar pesanan');
 
         return view('order.seller.showorder', compact('orders'));
     }
@@ -44,7 +48,7 @@ class OrderController extends Controller
     {
         $orders = Order::with('book', 'buyer', 'book.seller')
             ->orderByDesc('id')
-            ->paginate(10);
+            ->paginate(4);
 
         AdminActivityLog::log('view', 'orders', 'Admin melihat daftar pesanan');
 
@@ -62,6 +66,9 @@ class OrderController extends Controller
         $order->update([
             'status' => $request->status
         ]);
+
+        $role = ucfirst(Auth::user()->role);
+        AdminActivityLog::log('update', 'orders', $role . ' memperbarui status pesanan #' . $order->id . ' menjadi ' . $request->status);
 
         return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
@@ -81,6 +88,8 @@ class OrderController extends Controller
             'status' => 'completed',
         ]);
 
+        AdminActivityLog::log('rate', 'orders', 'Buyer memberikan rating ' . $request->rating . ' untuk pesanan #' . $order->id);
+
         return redirect()->back()->with('success', 'Terima kasih! Ulasan Anda berhasil disimpan.');
     }
 
@@ -90,6 +99,8 @@ class OrderController extends Controller
             ->where('buyer_id', Auth::id())
             ->with('book.seller', 'buyer')
             ->firstOrFail();
+
+        AdminActivityLog::log('view', 'orders', 'Buyer melihat detail pesanan #' . $order->id);
 
         return view('order.buyer.detail', compact('order'));
     }
@@ -102,6 +113,8 @@ class OrderController extends Controller
             ->whereIn('book_id', $sellerBookIds)
             ->with('book', 'buyer', 'book.seller')
             ->firstOrFail();
+
+        AdminActivityLog::log('view', 'orders', 'Seller melihat detail pesanan #' . $order->id);
 
         return view('order.seller.detail', compact('order'));
     }
@@ -140,9 +153,8 @@ class OrderController extends Controller
 
         $order->update(['status' => 'cancelled']);
 
-        if ($user->isAdmin()) {
-            AdminActivityLog::log('cancel', 'orders', 'Admin membatalkan pesanan #' . $order->id);
-        }
+        $role = ucfirst($user->role);
+        AdminActivityLog::log('cancel', 'orders', $role . ' membatalkan pesanan #' . $order->id);
 
         return redirect()->back()->with('success', 'Pesanan berhasil dibatalkan!');
     }

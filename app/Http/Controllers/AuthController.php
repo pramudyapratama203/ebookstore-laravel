@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdminActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,9 @@ class AuthController extends Controller
         // Cek validasi
         if (Auth::attempt($validated)) {
             $request->session()->regenerate();
+
+            $role = ucfirst(Auth::user()->role);
+            AdminActivityLog::log('login', 'auth', $role . ' login ke sistem');
 
             // Cek role user ke arah dashboard sesuai role
             if (Auth::user()->isBuyer()) {
@@ -77,6 +81,8 @@ class AuthController extends Controller
         // Login user
         Auth::login($user);
 
+        AdminActivityLog::log('register', 'auth', ucfirst($user->role) . ' mendaftar akun baru: ' . $user->email);
+
         if ($user->isBuyer()) {
             return redirect()->route('home.buyer')->with('success', 'Akun berhasil dibuat. Silahkan login');
         }
@@ -91,10 +97,13 @@ class AuthController extends Controller
     // Logout
     public function logout(Request $request)
     {
+        $role = Auth::check() ? ucfirst(Auth::user()->role) : 'User';
+        AdminActivityLog::log('logout', 'auth', $role . ' logout dari sistem');
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda berhasil logout');
+        return redirect('/')->with('success', 'Anda berhasil logout');
     }
 }

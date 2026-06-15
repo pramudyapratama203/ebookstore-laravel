@@ -94,17 +94,24 @@
                             </p>
                         </div>
 
-                        <div class="pt-3 border-t border-gray-50 space-y-3">
+                            <div class="pt-3 border-t border-gray-50 space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="font-black text-sm sm:text-base text-[#7a4f37]">
                                     Rp {{ number_format($book->price, 0, ',', '.') }}
                                 </span>
-                                @if($book->rating > 0)
-                                <span class="text-amber-500 text-xs flex items-center gap-0.5">
-                                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-                                    {{ number_format($book->rating, 1) }}
-                                </span>
-                                @endif
+                                <div class="flex items-center gap-2">
+                                    @if($book->stock > 0)
+                                        <span class="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">Stok {{ $book->stock }}</span>
+                                    @else
+                                        <span class="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">Habis</span>
+                                    @endif
+                                    @if($book->rating > 0)
+                                    <span class="text-amber-500 text-xs flex items-center gap-0.5">
+                                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        {{ number_format($book->rating, 1) }}
+                                    </span>
+                                    @endif
+                                </div>
                             </div>
 
                             <a href="{{ route('buyer.detail', $book->id) }}">
@@ -124,6 +131,10 @@
                 </p>
             </div>
         @endforelse
+        </div>
+
+        <div class="mt-12 flex justify-center">
+            {{ $books->links() }}
         </div>
     </section>
 </div>

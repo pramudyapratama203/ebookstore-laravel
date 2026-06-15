@@ -67,6 +67,10 @@
                                     <option value="other">Lainnya</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-2 text-gray-700 uppercase tracking-wider">Jumlah Halaman <span class="text-red-500 font-bold">*</span></label>
+                                <input type="number" name="pages" min="1" class="w-full bg-[#fcf9f0]/20 border border-gray-200 p-3 text-sm rounded-xl focus:outline-none focus:border-[#5f3822] focus:ring-1 focus:ring-[#5f3822] text-gray-900 shadow-sm transition-all" placeholder="250" required/>
+                            </div>
                         </div>
                     </section>
 

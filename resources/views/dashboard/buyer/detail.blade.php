@@ -68,6 +68,20 @@
 
                     <div class="space-y-4">
                         <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold">Tentukan Jumlah</h3>
+
+                        @if($book->stock > 0)
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-lg border border-green-200">
+                                    Stok tersedia: {{ $book->stock }}
+                                </span>
+                            </div>
+                        @else
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-lg border border-red-200">
+                                    Stok habis
+                                </span>
+                            </div>
+                        @endif
                         
                         <div class="flex flex-col sm:flex-row items-center gap-4 w-full">
                             
@@ -81,7 +95,7 @@
                                 <button type="button" id="btn-inc" class="w-10 h-10 flex items-center justify-center bg-white rounded-lg text-lg font-bold text-gray-700 hover:bg-gray-50 shadow-sm transition active:scale-95">+</button>
                             </div>
 
-                            <button type="submit" class="w-full sm:flex-1 bg-[#7a4f37] text-white h-14 rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:bg-[#633f2b] active:scale-[0.98] transition-all">
+                            <button type="submit" class="w-full sm:flex-1 bg-[#7a4f37] text-white h-14 rounded-xl text-sm font-bold uppercase tracking-wider shadow-md hover:bg-[#633f2b] active:scale-[0.98] transition-all {{ $book->stock < 1 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $book->stock < 1 ? 'disabled' : '' }}>
                                 🛒 Tambah ke Keranjang
                             </button>
                         </div>
@@ -108,12 +122,15 @@
         const btnDec = document.getElementById('btn-dec');
         const qtyText = document.getElementById('qty-text');
         const qtyInput = document.getElementById('quantity-input');
+        const maxStock = {{ $book->stock }};
 
         btnInc.addEventListener('click', () => {
             let currentQty = parseInt(qtyText.textContent);
-            currentQty++;
-            qtyText.textContent = currentQty;
-            qtyInput.value = currentQty; 
+            if (currentQty < maxStock) {
+                currentQty++;
+                qtyText.textContent = currentQty;
+                qtyInput.value = currentQty;
+            }
         });
 
         btnDec.addEventListener('click', () => {

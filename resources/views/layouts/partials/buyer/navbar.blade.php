@@ -24,10 +24,9 @@
         </nav>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('profile.buyer.show') }}">
-                <button class="p-2.5 text-[#7a4f37] rounded-xl hover:bg-[#f4dfcb]/40 transition-all">
-                    <span class="material-symbols-outlined">account_circle</span>
-                </button>
+            <a href="{{ route('profile.buyer.show') }}" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-[#f4dfcb]/40 transition-all">
+                <span class="text-sm font-semibold text-[#7a4f37]">{{ auth()->user()->name }}</span>
+                <span class="material-symbols-outlined text-[#7a4f37]">account_circle</span>
             </a>
         </div>
     </div>
